@@ -1,51 +1,42 @@
-def classify_body_shape(gender, bust, waist, hips, high_hip=None):
-    if gender == 'female':
-        if (hips - bust) >= 3.6 and (hips - bust) < 10 and (hips - waist) >= 9 and (high_hip is not None and high_hip < 1.193):
-            return 'Bottom Hourglass'
-        elif (bust - hips) > 1 and (bust - hips) < 10 and (bust - high_hip) >= 9:
-            return 'Top Hourglass'
-        elif (hips - bust) >= 3.6 and (hips - waist) < 9:
-            return 'Triangle or Pear'
-        elif (hips - bust) < 3.6 and (bust - hips) < 3.6 and (bust - waist) < 9 and (hips - waist) < 10:
-            return 'Rectangle or Banana or Straight'
-        elif (bust - hips) >= 3.6 and (bust - waist) < 9:
-            return 'Inverted Triangle'
-        elif (hips - bust) >= 3.6 and (hips - waist) < 9:
-            return 'Apple or Round'
-        elif abs(hips - bust) <= 5 and abs(bust - hips) <= 5 and (hips - waist) >= 9:
-            return 'Hourglass'
-        else:
-            return 'Undefined'
-    
-    elif gender == 'male':
-        if (bust - hips) <= 2 and (hips - bust) <= 2 and (bust - waist) >= 5 and (hips - waist) >= 5:
-            return 'Bottom Hourglass'
-        elif (hips - bust) >= 2 and (waist - bust) < 7:
-            return 'Triangle or Pear'
-        elif (bust - hips) < 2 and (hips - bust) < 2 and (bust - waist) < 7 and (hips - waist) < 5:
-            return 'Rectangle or Banana or Straight'
-        elif (bust - hips) >= 5 and (bust - hips) < 15 and (bust - waist) >= 7:
-            return 'Inverted Triangle'
-        else:
-            return 'Undefined'
-    
-    return 'Undefined'
+import math
 
-# Example usage for women
-gender = 'female'
-bust = 36
-waist = 28
-hips = 38
-high_hip = 37
+# Conversion factors
+INCH_TO_CM_FACTOR = 2.54
 
-body_shape = classify_body_shape(gender, bust, waist, hips, high_hip)
-print(f"The body shape is: {body_shape}")
+def convert_to_cm(inches):
+    return inches * INCH_TO_CM_FACTOR
 
-# Example usage for men
-gender = 'male'
-bust = 40
-waist = 32
-hips = 38
+def classify_body_shape(gender, bust, waist, high_hip, hips):
+    bust = convert_to_cm(bust)
+    waist = convert_to_cm(waist)
+    high_hip = convert_to_cm(high_hip)
+    hips = convert_to_cm(hips)
 
-body_shape = classify_body_shape(gender, bust, waist, hips)
-print(f"The body shape is: {body_shape}")
+    if gender.lower() == 'men':
+        if (bust - hips) > 2.54 and (bust - hips) < 25.4 and (bust - high_hip) >= 22.86:
+            return "Top Hourglass"
+        elif (bust - hips) <= 2.54 and (hips - bust) <= 2.54 and (bust - waist) >= 12.7 and (hips - waist) >= 12.7:
+            return "Bottom Hourglass"
+        elif (hips - bust) >= 5.08 and (waist - bust) < 17.78:
+            return "Triangle or Pear"
+        elif (bust - hips) < 2.54 and (hips - bust) < 2.54 and (bust - waist) < 17.78 and (hips - waist) < 12.7:
+            return "Rectangle or Banana or Straight"
+        elif (bust - hips) >= 12.7 and (bust - hips) < 38.1 and (bust - waist) >= 17.78:
+            return "Inverted Triangle"
+    elif gender.lower() == 'women':
+        if (bust - hips) > 2.54 and (bust - hips) < 25.4 and (bust - high_hip) >= 22.86:
+            return "Top Hourglass"
+        elif (hips - bust) >= 9.14 and (hips - bust) < 25.4 and (hips - waist) >= 22.86 and (high_hip - waist) < 12.19:
+            return "Bottom Hourglass"
+        elif (hips - bust) >= 9.14 and (hips - bust) < 25.4 and (hips - waist) < 22.86 and (hips - waist) >= 9.14:
+            return "Triangle or Pear"
+        elif (hips - bust) < 9.14 and (bust - hips) < 9.14 and (bust - waist) < 22.86 and (hips - waist) < 25.4:
+            return "Rectangle or Banana or Straight"
+        elif (bust - hips) >= 9.14 and (bust - waist) < 22.86:
+            return "Inverted Triangle"
+        elif (hips - bust) >= 9.14 and (hips - waist) < 22.86:
+            return "Apple or Round"
+
+# Example usage
+body_shape = classify_body_shape('women', 96, 76, 99, 105)
+print(body_shape)
