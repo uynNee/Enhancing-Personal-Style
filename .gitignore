@@ -1,0 +1,40 @@
+
+open with VScode.bat
+/my_project/data/fashion products small/myntradataset/images
+/my_project/data/fashion products small/myntradataset/images
+/.venv/Lib/site-packages/blinker/__pycache__
+/.venv/Lib/site-packages/__pycache__
+/.venv/Lib/site-packages/click/__pycache__
+/.venv/Lib/site-packages/colorama/tests/__pycache__
+/.venv/Lib/site-packages/dateutil/__pycache__
+/.venv/Lib/site-packages/dateutil/parser/__pycache__
+/.venv/Lib/site-packages/dateutil/tz/__pycache__
+/.venv/Lib/site-packages/dateutil/zoneinfo/__pycache__
+/.venv/Lib/site-packages/flask/__pycache__
+/.venv/Lib/site-packages/flask/json/__pycache__
+/.venv/Lib/site-packages/flask/sansio/__pycache__
+/.venv/Lib/site-packages/ipynb_py_convert/__pycache__
+/.venv/Lib/site-packages/itsdangerous/__pycache__
+/.venv/Lib/site-packages/jinja2/__pycache__
+/.venv/Lib/site-packages/joblib/__pycache__
+/.venv/Lib/site-packages/joblib/externals/__pycache__
+/.venv/Lib/site-packages/joblib/externals/loky/__pycache__
+/.venv/Lib/site-packages/joblib/externals/cloudpickle/__pycache__
+/.venv/Lib/site-packages/joblib/test/__pycache__
+open with VScode.bat
+open with VScode.bat
+/my_project/data/fashion products small/myntradataset/images
+/my_project/data/fashion products small/images
+/.venv/Lib/site-packages/werkzeug/wrappers/__pycache__
+/.venv/Lib/site-packages/werkzeug/sansio/__pycache__
+/.venv/Lib/site-packages/werkzeug/routing/__pycache__
+/.venv/Lib/site-packages/werkzeug/middleware/__pycache__
+/.venv/Lib/site-packages/werkzeug/debug/__pycache__
+/.venv/Lib/site-packages/werkzeug/datastructures/__pycache__
+/.venv/Lib/site-packages/werkzeug/__pycache__
+/.venv/Lib/site-packages/tzdata/zoneinfo/US/__pycache__
+/.venv/Lib/site-packages/tzdata/zoneinfo/Pacific/__pycache__
+/.venv/Lib/site-packages/tzdata/zoneinfo/Mexico/__pycache__
+/.venv/Lib/site-packages/tzdata/zoneinfo/Indian/__pycache__
+/.venv/Lib/site-packages/tzdata/zoneinfo/Europe/__pycache__
+*.pyc

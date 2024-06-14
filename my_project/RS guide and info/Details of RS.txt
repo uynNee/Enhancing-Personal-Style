@@ -1,0 +1,1040 @@
+Part 1:
+Introduction
+Recommendation systems are built to predict what users might like, especially when there are lots of choices available. They can explicitly offer those recommendations to users (e.g., Amazon or Netflix, the classic examples), or they might work behind the scenes to choose which content to surface without giving the user a choice.
+
+Either way, the “why” is clear: they’re critical for certain types of businesses because they can expose a user to content they may not have otherwise found or keep a user engaged for longer than they otherwise would have been. While building a simple recommendation system can be quite straightforward, the real challenge is to actually build one that works and where the business sees real uplift and value from its output.
+
+
+Recommendation systems can be built using a variety of techniques, from simple (e.g., based only on other rated items from the same user) to extremely complex. Complex recommendation systems leverage a variety of different data sources (one challenge is using unstructured data, especially images, as the input) and machine learning (including deep learning) techniques. Thus, they are well suited for the world of artificial intelligence and more specifically unsupervised learning; as users continue to consume content and provide more data, these systems can be built to provide better and better recommendations.
+
+In this post and those to follow, I will be walking through the creation and training of recommendation systems, as I am currently working on this topic for Master Thesis. Part 1 provides a high-level overview of recommendation systems, how they are built, and how they can be used to improve businesses across industries.
+
+The 2 Types of Recommendation System
+There are two primary types of recommendation systems, each with different sub-types. Depending on goals, audience, the platform, and what you’re recommending, these different approaches can be employed individually, though generally, the best results come from using them in combination:
+
+1 — Collaborative Filtering
+It primarily makes recommendations based on inputs or actions from other people (rather than only the user for whom a recommendation is being made).
+
+
+Variations on this type of recommendation system include:
+
+By User Similarity: This strategy involves creating user groups by comparing users’ activities and providing recommendations that are popular among other members of the group. It is useful on sites with a strong but versatile audience to quickly provide recommendations for a user on which little information is available.
+By Association: This is a specific type of the one mentioned above, otherwise known as “Users who looked at X also looked at Y.” Implementing this type of recommendation system is a matter of looking at purchasing sequences or purchasing groups, and showing similar content. This strategy is useful for capturing recommendations related to naturally complementary content as well as at a certain point in the life of the user.
+2 — Content-Based
+Content-based systems make recommendations based on the user’s purchase or consumption history and generally become more accurate the more actions (inputs) the user takes.
+
+
+More specific types of content-based recommendation systems include:
+
+By Content Similarity: As the most basic type of content-based recommendation system, this strategy involves recommending content that is close based on its metadata. This approach makes sense for catalogs with a lot of rich metadata and where traffic is low compared to the number of products in the catalog.
+By Latent Factor Modeling: Going one step further than the content similarity approach, the crux of this strategy is inferring individuals’ inherent interests by assuming that previous choices are indicative of certain tastes or hobbies. Where the previous strategy is based on explicit, manually filled catalog metadata, this strategy hinges on discovering implicit relationships. This is done by using the history of users’ larger interactions (e.g., movie watched, item purchased, etc.) to learn these tastes.
+By Topic Modeling: This is a variant of the Latent Factor Modeling strategy, whereby instead of considering users’ larger actions, one would infer interests by analyzing unstructured text to detect particular topics of interest. It is particularly interesting for use cases with rich but unstructured textual information (such as news articles).
+By Popular Content Promotion: This involves highlighting product recommendations based on the product’s intrinsic features that may make it interesting to a wide audience: price, feature, popularity, etc. This strategy can also take into account the freshness or age of the content and thus enable using the most trendy content for recommendations. This is often used in cases where new content is the majority.
+The 6 Steps to Build a Recommendation System
+Building a successful and robust recommendation system can be relatively straightforward if you’re following the basic steps to grow from raw data to a prediction. That being said, there are some particularities to consider when it comes to recommendation systems that often go overlooked and that, for the most efficient process and best predictions, are worth introducing (or reiterating).
+
+This section will walk through the six fundamental steps to completing a data project in the context of building a recommendation system.
+
+1 — Understand the Business
+Extremely simple and critical but often overlooked, the first step in building a recommendation system is defining the goals and parameters of the project. This will most definitely involve discussions between and input from both the data team as well as business teams (which might be product managers, operations teams, even partnership or advertising teams, depending on your product).
+
+
+Here are some specific topics to consider to understand the business need more deeply and kickstart the discussion between these teams:
+
+What is the end goal of the project? Is the idea to build a recommendation system to directly increase sales / achieve a higher average basket size / reduce browsing time and make a purchase happen faster / reduce the long tail of unconsumed content / improve user engagement time with your product?
+Is a recommendation really necessary? This is perhaps an obvious question, but since they can be expensive to build and maintain, it’s worth asking. Can the business achieve its end goal by driving discovery via a static set of content instead (like staff/editor picks or most popular content)?
+At what point will recommendations occur? If recommendations make sense in multiple places (i.e., on a home screen upon first visiting the app or site as well as after purchasing or consuming content), will the same system be used in both places, or are the parameters and needs distinct for each?
+What data is available on which to base recommendations? At the time of recommendation, approximately what percentage of users are logged in (in which case there may be much more data available) vs. anonymous (which could complicate things for building the recommendation system)?
+Are there product changes that must be made first? If the team wants to build the recommendation system using more robust data, are there product changes that must be made first to identify users earlier (i.e., invite them to log in sooner), and if so, are they reasonable changes from a business perspective?
+Should all content or products be treated equally? That is, are there particular products or pieces of content that the business team wants to (or has to) promote aside from organic recommendations?
+How can users with similar tastes be segmented? In other words, if employing the model based on user similarity, how will you decide what makes users similar?
+2 — Get the Data
+The best recommendation systems use terabyte(s) of data. So when it comes to rounding up data to use for your recommendation systems, in general, the more the better. This can be difficult if users are unknown when you’re trying to make a recommendation for them — i.e., they’re not logged in or, even more challenging, they’re brand new. If you have a business where most users are unknown, you may need to rely on external data sources or general data not explicitly tied to preferences, like demographics, browsing history, etc.
+
+When it comes to user preferences, there are two kinds of feedback: explicit and implicit.
+
+Explicit user feedback is anything that requires user effort, like leaving a review/rating or initiating a complaint or product return (often from customer relationship management, CRM, data).
+By contrast, implicit user feedback is information that can be gathered about a user’s preferences without them actually specifying those preferences. For example, past purchase history, time spent looking at certain offers, products, or content, data from social networks, etc.
+
+Good recommendation systems usually employ a combination of these types of feedback since there are advantages and disadvantages to each.
+
+Explicit feedback can be very clear: a user has literally stated their preferences, likes, or dislikes. But by the same token, it’s inherently biased; a user doesn’t know what he doesn’t know (in other words, he might like something but has never tried it and therefore wouldn’t list it as a preference or interact with that type of item or content normally).
+By contrast, implicit feedback is the opposite — it can reveal preferences that a user didn’t — or wouldn’t — otherwise, admit to in a profile (or perhaps their profile information is stale). On the other hand, implicit feedback can be more complicated to interpret; just because a user spent time on a given item doesn’t mean that (s)he likes it, so it’s best to rely on a combination of implicit signals to determine preference.
+3 — Explore, Clean, and Augment the Data
+One thing to consider when exploring and cleaning your data for a recommendation system, in particular, is changing user tastes. Depending on what you’re recommending, the older reviews, actions, etc., may not be the most relevant on which to base a recommendation. Consider only looking at features that are more likely to represent the user’s current tastes and removing older data that might no longer be relevant or adding a weight factor to give more importance to recent actions compared to older ones.
+
+
+Datasets for recommendation systems can be challenging to work with because they are commonly high dimensional, but at the same time, it’s also common that many of the features don’t have any values, which can make clustering and outlier detection difficult.
+
+4 — Predict the Ranking
+Given the work done in the previous steps, you could have already built a recommendation system, simply by ranking those scores by users and you’ll have products to recommend. This strategy doesn’t use machine learning or a predictive element, but that’s totally fine. For some use cases, this is sufficient.
+
+But if you do want to build something more complex, there are lots of subtasks that can be done after users consume recommended content that can be used to further refine the system. There are several ways to leverage the hybrid approach to try for the highest-quality recommendations:
+
+Presenting recommendations from different types of systems together side-by-side.
+Maintaining multiple algorithms in parallel where the decision of which algorithm is preferred over another is itself subject to machine learning (e.g., multi-armed bandit).
+Using a pure machine learning approach to combine multiple recommendation systems (logistic regression or other weighted regression methods). One specific example would be using a weighted average of two (or more) recommendations using different techniques.
+
+It’s also possible that different models will work better in different parts of the product or website. For example, the homepage where the user has yet to take action vs. after the user has clicked or consumed content in some way.
+
+5 — Visualize the Data
+In the context of recommendation systems, visualization serves 2 primary purposes:
+
+When still in the exploration phases, visualizations can help reveal things about the data set or give feedback on model performance that would otherwise be difficult to see.
+After putting the recommendation system in place, visualizations can help convey useful information to the business or product teams (e.g., which content does well but isn’t being discovered, similarities between users’ tastes, content or products commonly consumed together, etc.) so they can make changes or decisions based on this information.
+
+The primary issue with visualizing this type of data is the amount of data present, which can make it difficult to cut through the noise in a meaningful way. But by the same token, a good visualization will help make sense out of lots of data from which it would be otherwise difficult to derive meaningful insights.
+
+6 — Iterate and Deploy Models
+Recommendation systems that are working in a development environment or sandbox don’t do any good. It’s all about putting the system into production so that you can begin to see the effect on the business goals you’ve laid out in the beginning.
+
+Additionally, keep in mind that the more data you have with which to feed the recommendation system, the better it can become. So with this type of data project perhaps more so than others, it’s critical to evaluate performance and continue to fine-tune, like adding new data sources to see if they have a positive effect.
+
+
+In fact, making sure your recommendation system is built to adapt and evolve by regularly monitoring its performance is one of the most important parts of the process — a recommendation system that isn’t properly adjusting to tastes or new data over time likely will not help you ultimately achieve your initial project goal, even if the system performed well at first. Building a feedback loop to understand whether or not users care about recommendations will be helpful and provide a good metric for making refinements and decisions going forward.
+
+If recommendations are core to your business, constantly trying new things and evolving the initial model you’ve created will be an ongoing task; recommendation systems are not something you can create and cast aside.
+
+Challenges
+It’s important to create a recommendation system that will scale with the amount of data you have. If it’s built for a limited dataset and that dataset grows, computation costs grow exponentially, and the system will be unable to handle the amount of data. To avoid having to rebuild your recommendation system later on, you must ensure from the beginning it is built to scale to expected data volumes.
+
+It’s also possible that after spending time, energy, and resources on building a recommendation system (and even after having enough data and good initial results) that the recommendation system only makes very obvious recommendations. The crux of avoiding this pitfall really harkens back to the first of the seven steps: understand the business need. If there isn’t enough of a content long-tail or no need for the system, perhaps you need to reconsider the need to build a recommendation system in the first place.
+
+
+Finally, people’s tastes don’t stay static over time, and if a recommendation system isn’t built to consider this fact, it may never be as accurate as it could be. Similarly, there is a risk of building a recommendation system that doesn’t get better over time. As users continue to consume content and more data is available, your recommendation system should learn more about users and adapt to their tastes. A recommendation system not agile enough to continue to adapt can quickly become obsolete and won’t serve its purpose.
+
+Future Work
+Basic recommendation systems have been around for quite some time, though they continue to get more complex and have been perfected by retail and content giants. But what’s next? What are the latest trends and developments that businesses should consider if they are looking to develop a truly cutting-edge system?
+
+Context-aware recommendation systems represent an emerging area of experimentation and research, aiming to provide even more precise content given the context of the user in a particular moment in time. For example, is the user at home, or on the go? Using a larger or smaller screen? Is it morning or night? Given the data available on a certain user, context-aware systems may be able to provide recommendations a user is more likely to take in those scenarios.
+
+
+Deep learning is already in use by some of the biggest and most powerful recommendation systems in the world (like YouTube and Spotify). But as the amount of data continues to skyrocket and more businesses find themselves up against a huge corpus of content and struggling to scale, deep learning will become the de facto methodology for not only recommendation systems but all learning problems.
+
+Solving the cold-start problem is also something that cutting-edge researchers are starting to look at so that recommendations can be made for items on which there is little data. This is a critically important area for businesses with lots of turnover in content to examine so that they can successfully push items that will sell well (even before they know how that item will perform).
+
+Conclusion
+Recommendation systems can be an effective way to expose users to content they may not have otherwise found, which in turn can forward larger business goals like increasing sales, advertising revenues, or user engagement. But there are a few key points to find success with recommendation systems. Namely, recommendation systems should be, above all, necessary.
+
+Building a complex system that requires experienced staff and ongoing maintenance when a simpler solution will do is a waste of data team resources that could be spent elsewhere for more impact. The challenge lies in building a system that will actually have a business impact; building the system in and of itself shouldn’t be the end goal.
+
+Recommendation systems should also be agile. That is, adaptable and able to evolve as users do. Putting a recommendation system into production isn’t the final step in the process; rather, it’s an ongoing evolution, looking at what works, what doesn’t, thinking about additional data sources that might help make better recommendations, etc.
+
+Part 2:
+Introduction
+The number of research publications on deep learning-based recommendation systems has increased exponentially in the past recent years. In particular, the leading international conference on recommendation systems, RecSys, started to organize regular workshops on deep learning since 2016. For example, in the 2019 conference in Copenhagen a couple of weeks ago, there is a whole category of papers on deep learning, which promotes research and encourages applications of such methods.
+
+In this post and those to follow, I will be walking through the creation and training of recommendation systems, as I am currently working on this topic for my Master Thesis. In Part 1, I provided a high-level overview of recommendation systems, how they are built, and how they can be used to improve businesses across industries. Part 2 provides a nice review of the ongoing research initiatives with regard to the strengths, weaknesses, and application scenarios of these models. Most of the review here comes from the incredibly comprehensive survey conducted by Shuai Zhang et. al, so please check it out if you want to get more detail!
+
+Why Deep Learning for Recommendation?
+Here are the 4 key strengths of deep learning-based recommendation systems compared to that of traditional content-based and collaborative filtering approaches:
+
+Deep learning can model the non-linear interactions in the data with non-linear activations such as ReLU, Sigmoid, Tanh… This property makes it possible to capture the complex and intricate user-item interaction patterns. Conventional methods such as matrix factorization and factorization machines are essentially linear models. This linear assumption, acting as the basis of many traditional recommenders, is oversimplified and will greatly limit their modeling expressiveness. It is well-established that neural networks are able to approximate any continuous function with arbitrary precision by varying the activation choices and combinations. This property makes it possible to deal with complex interaction patterns and precisely reflect the user’s preference.
+Deep learning can efficiently learn the underlying explanatory factors and useful representations from input data. In general, a large amount of descriptive information about items and users is available in real-world applications. Making use of this information provides a way to advance our understanding of items and users, thus, resulting in a better recommender. As such, it is a natural choice to apply deep neural networks to representation learning in recommendation models. The advantages of using deep neural networks to assist representation learning are in two-folds: (1) it reduces the efforts in hand-craft feature design; and (2) it enables recommendation models to include heterogeneous content information such as text, images, audio, and even video.
+Deep learning is powerful for sequential modeling tasks. In tasks such as machine translation, natural language understanding, speech recognition, etc., RNNs and CNNs play critical roles. They are widely applicable and flexible in mining sequential structure in data. Modeling sequential signals is an important topic for mining the temporal dynamics of user behavior and item evolution. For example, next-item/basket prediction and session-based recommendations are typical applications. As such, deep neural networks become a perfect fit for this sequential pattern mining task.
+Deep learning possesses high flexibility. There are many popular deep learning frameworks nowadays, including TensorFlow, Keras, Caffe, MXnet, DeepLearning4j, PyTorch, Theano… These tools are developed in a modular way and have active community/professional support. The good modularization makes development and engineering a lot more efficient. For example, it is easy to combine different neural structures to formulate powerful hybrid models or replace one module with others. Thus, we could easily build hybrid and composite recommendation models to simultaneously capture different characteristics and factors.
+To provide a bird-eye’s view of this field, I will classify the existing models based on the types of employed deep learning techniques.
+
+1> Multi-Layer Perceptron Based Recommendation
+MLP is a feed-forward neural network with multiple hidden layers between the input layer and the output layer. You can interpret MLP as a stacked layer of non-linear transformations, learning hierarchical feature representations. It is a concise but effective network that can approximate any measurable function to any desired degree of accuracy. As such, it is the basis of numerous advanced approaches and is widely used in many areas.
+
+
+MLP can add the non-linear transformation to existing recommendation system approaches and interpret them into neural extensions.
+
+A recommendation can be viewed as a two-way interaction between users’ preferences and items’ features. For example, matrix factorization decomposes the rating matrix into low-dimensional user/item latent factors. Neural Collaborative Filtering is a representative work that constructs a dual neural network to model this two-way interaction between users and items.
+Deep Factorization Machine is an end-to-end model that seamlessly integrates a factorization machine and an MLP. It can model the high-order feature interactions via deep neural network and low-order interactions with factorization machines.
+Using MLP for feature representation is very straightforward and highly efficient, even though it might not be as expressive as auto-encoder, CNNs, and RNNs.
+
+Wide and Deep Learning is a nice model that can solve both regression and classification problems that were initially introduced for app recommendation in Google Play. The wide learning component is a single layer perceptron which can also be regarded as a generalized linear model. The deep learning component is an MLP. Combining these two learning techniques enables the recommender to capture both memorization and generalization.
+Deep Neural Networks for YouTube Recommendations divides the recommendation task into 2 stages: candidate generation and candidate ranking. The candidate generation network retrieves a subset from all video corpus. The ranking network generates a top-n list based on the nearest neighbors’ scores from the candidates.
+Collaborative Metric Learning replaces the dot product of matrix factorization wit Euclidean distance because dot product does not satisfy the triangle inequality of distance function. The user and item embeddings are learned via maximizing the distance between users and their disliked items and minimizing that between users and their preferred items.
+2> Autoencoder Based Recommendation
+AE is an unsupervised model attempting to reconstruct its input data in the output layer. In general, the bottleneck layer is used as a salient feature representation of the input data. Almost all of its variants (denoting AE, variational AE, connective AE, and marginalized AE) can be applied to the recommendation task.
+
+
+AE can be used to learn the lower-dimensional feature representations at the bottleneck layer.
+
+Collaborative Deep Learning is a hierarchical Bayesian model that integrates stacked denoising auto-encoder (SDAE) into probabilistic matrix factorization (PMF). To seamlessly combine deep learning and recommendation model, the paper proposes a general Bayesian deep learning framework consisting of two tightly hinged components: a perception component (SDAE) and a task-specific component (PMF). This enables the model to balance the influences of side information and interaction history.
+Collaborative Deep Ranking is devised specifically in a pairwise framework for the top-n recommendation. The paper shows that the pairwise model is more suitable for ranking lists generation.
+Deep Collaborative Filtering is a general framework for unifying deep learning approaches with a collaborative filtering model. The framework makes it easier to utilize deep feature learning techniques to build hybrid collaborative models.
+AE can be used to fill in the blanks of the user-item interaction matrix directly in the reconstruction layer.
+
+AutoRec takes user/item partial vectors as input and aims to reconstruct them in the output layer.
+Collaborative Denoising Auto-encoder is principally used for ranking prediction. The input of CDAE is user partially observed implicit feedback, which can be regarded as a preference vector that reflects a user’s interests to items. The paper also proposes a negative sampling technique to sample a small subset from the negative set (items with which the user has not interacted), which reduces the time complexity substantially without degrading the ranking quality.
+Multi-VAE and Multi-DAE propose a variant of a variational autoencoder for recommendation with implicit data. The paper introduces a principled Bayesian inference approach for parameter estimation and shows favorable results than commonly used likelihood functions.
+3> Convolutional Neural Networks Based Recommendation
+CNN is basically a feed-forward neural network with convolution layers and pooling operations. It can capture the global and local features, thus significantly enhancing the model’s efficiency and accuracy. It is very powerful in processing unstructured multi-media data.
+
+
+CNN can be used to extract features from images.
+
+What Your Images Reveal investigates the influences of visual features to Point-of-Interest recommendation, and proposes a visual content enhanced POI recommender system. This system adopts CNN to extract image features, which is built on Probabilistic Matrix Factorization by exploring the interactions between visual content and latent user/location factor.
+Comparative Deep Learning of Hybrid Representations for Image Recommendations proposes a comparative deep learning model with CNNs for image recommendation. The network consists of 2 CNNs which are used for image representation learning and an MLP for user preferences modeling.
+ConTagNet is a context-aware tag recommendation system. The image features are learned by CNNs. The context representations are processed by a two-layer fully-connected feedforward neural network. The outputs of 2 neural networks are concatenated and fed into a softmax function to predict the probability of candidate tags.
+CNN can be used to extract features from the text.
+
+DeepCoNN adopts 2 parallel CNNs to model user behaviors and item properties from review texts. This model alleviates the sparsity problem and enhances the model interpretability by exploiting rich semantic representation of review texts with CNNs. It utilizes a word embedding technique to map the review texts into a lower-dimensional semantic space as well as keep the words sequences information. The extracted review representations then pass through a convolutional layer with different kernels, a max-pooling layer, and a fully-connected layer consecutively.
+Automatic Recommendation Technology for Learning Resources with Convolutional Neural Network builds an e-learning resources recommendation model, which uses CNNs to extract item features from text information of learning resources such as the introduction and the content of learning material.
+CNN can be used to extract features from audio and video.
+
+Deep Content-Based Music Recommendation uses CNN to extract features from music signals. The convolutional kernels and pooling layers allow operations at multiple timescales. This content-based model can alleviate the cold-start problem of music recommendation.
+Collaborative Deep Metric Learning for Video Understanding extracts audio features with the prominent CNN-based model ResNet. The recommendation is performed in the collaborative metric learning framework, similar to CML mentioned earlier.
+CNN can be applied to vanilla collaborative filtering.
+
+Outer Product-Based Neural Collaborative Filtering uses CNNs to improve Neural Collaborative Filtering. The so-called ConvNCF model uses an outer product instead of a dot product to model the user-item interaction patterns. The paper applies CNNs over the result of the outer product and thus can capture the high-order correlations among embeddings dimensions.
+Personalized Top-N Sequential Recommendation via Convolutional Sequence Embedding presents sequential recommendations with CNNs, where a hierarchical and a vertical CNN are used to model the union-level sequential patterns and skip behaviors for the sequence-aware recommendation.
+Graph-based CNNs can handle the interactions in recommendation tasks.
+
+Graph Convolutional Matrix Completion considers the recommendation problem as a link prediction task with graph CNNs. This framework makes it easy to integrate user/item side information such as social networks and item relationships into the recommendation model.
+Graph Convolutional Neural Networks for Web-Scale Recommender Systems uses graph CNNs for recommendations on Pinterest. This model generates item embeddings from both graph structure as well as item feature information using random walk and graph CNNs, and thus suits well for large-scale web recommender.
+4> Recurrent Neural Networks Based Recommendation
+RNN is suitable for modeling sequential data. It has loops and memories to remember former computations. Variants of RNNs including LSTM and GRU are deployed to overcome the vanishing gradient problem.
+
+
+RNN can deal with the temporal dynamics of interactions and sequential patterns of user behaviors in session-based recommendation tasks.
+
+GRU4Rec is a session-based recommendation model, where the input is the actual state of a session with 1-of-N encoding, where N is the number of items. The coordinate will be 1 if the corresponding item is active in this session, otherwise 0. The output is the likelihood of being the next in the session for each item.
+Personal Recommendation using Deep Recurrent Neural Networks in NetEase is a session-based recommendation model for a real-world e-commerce website. It utilizes the basic RNNs to predict what the user will buy next based on the click history. To minimize the computation costs, it only keeps a finite number of the latest states while collapsing the older states into a single historical state. This method helps to balance the trade-off between computation costs and prediction accuracy.
+Recurrent Recommender Network is a non-parametric recommendation model built on RNNs. It can model the seasonal evolution of items and changes in user preferences over time. It uses 2 LSTM networks as the building block to model the dynamic user/item states.
+RNN is also a good choice to learn the side information with sequential patterns.
+
+Recurrent Coevolutionary Latent Feature Processes for Continuous-Time Recommendation presents a co-evolutionary latent model to capture the co-evolution nature of users’ and items’ latent features. The interactions between users and items play an important role in driving the changes in user preferences and item status. To model the historical interactions, the author proposed using RNNs to automatically learn representations of the influences from drift, evolution, and co-evolution of the user and item features.
+Ask the GRU proposes using GRUs to encode the text sequences into a latent factor model. This hybrid model solves both warm-start and cold-start problems. Furthermore, the authors adopted a multi-task regularizer to prevent overfitting and alleviate the sparsity of training data. The main task is rating prediction while the auxiliary task is item meta-data (e.g. tags, genres) prediction.
+Embedding-based News Recommendation for Millions of Users proposes using GRUs to learn more expressive aggregation for user browsing history and recommend news articles with a latent factor model. The results show a significant improvement compared with the traditional word-based approach. The system has been fully deployed to online production services and serving over 10 million unique users every day.
+5> Restricted Boltzmann Machines Based Recommendation
+RBM is a two-layer neural network consisting of a visible layer and a hidden layer. It can be easily stacked to a deep network. The term Restricted indicates that there are no intra-layer communications in a visible or a hidden layer.
+
+
+Restricted Boltzmann Machines for Collaborative Filtering is the first recommendation model that was built on RBM. The visible unit of RBM is limited to binary values, thus, the rating score is represented in a one-hot vector to adapt to this restriction. Each user has a unique RBM with a shared parameter, and the parameters can be learned via the Contrastive Divergence algorithm. The essence here is that the users implicitly tell their preferences by giving ratings, regardless of how they rate items.
+A Non-IID Framework for Collaborative Filtering with RBMs combines the user-based and item-based RBM-CF in a unified framework. In this case, the visible units are determined both by the user and the item hidden units.
+Item Category Aware Conditional Restricted Boltzmann Machine Based Recommendation designs a hybrid RBM-CF which incorporates the item features and is based on conditional RBM. Here, the conditional layer is modeled with the binary item genres, thus affecting both the hidden layer and the visible layer with different connected weights.
+6> Neural Attention Models Based Recommendation
+Attentional models are differentiable neural architectures that operate based on soft content addressing over an input sequence or an input image. They are motivated by human visual attention and can filter out the un-informative features from raw inputs and reduce the side effects of noisy data. This attention mechanism is ubiquitous in Computer Vision and Natural Language Processing domains.
+
+
+In the context of recommendation systems, we can leverage the attention mechanism to filter out the noisy content and selected the most representative items while providing good interpretability.
+
+Attentive Collaborative Filtering uses an attentive collaborative filtering model with a 2-level attention mechanism inside a latent factor model. The model consists of item-level and component-level attention: where the item-level one selects the most representative items to characterize users; and the component-level one captures the most informative features form multimedia auxiliary information for each user.
+Hashtag Recommendation with Topical Attention-Based LSTM uses an attention-based LSTM model for hashtag recommendation. The model takes advantage of both RNNs and an attention mechanism to capture the sequential property and recognize the informative words form microblog posts.
+Hashtag Recommendation Using Attention-Based Convolutional Neural Network uses an attention-based CNN model for the same hashtag recommendation in microblog, which is treated as a multi-label classification problem. The model consists of a global channel and a local attention channel: where the global channel has convolution and max-pooling layers to encode all the words; and the local channel has an attention layer with given window size and threshold to select informative words.
+7> Neural AutoRegressive Based Recommendation
+Neural Autoregressive Distribution Estimation (NADE) is an unsupervised neural network built on top of an autoregressive model and feedforward neural networks. It is a tractable and efficient estimator for modeling data distribution and densities, which can be considered a desirable alternative to Restricted Boltzmann Machines.
+
+
+Based on my review, A Neural Auto-Regressive Approach to Collaborative Filtering is the sole paper that proposes a NADE based collaborative filtering model (CF-NADE) that can model the distribution of user ratings.
+
+8> Deep Reinforcement Learning Based Recommendation
+Reinforcement Learning (RL) operates on a trial-and-error paradigm and consists of 5 components (agents, environments, states, actions, and rewards). The combination of deep neural networks and reinforcement learning formulate Deep Reinforcement Learning which has achieved human-level performance across multiple domains such as games and self-driving cars. Deep neural networks enable the agent to get knowledge from raw data and derive efficient representations without handcrafted features and domain heuristics.
+
+
+Traditionally, most recommendation models consider the recommendation process to be static, making it challenging to capture the user’s temporal intentions and to respond in a timely manner. In recent years, Deep Reinforcement Learning has been making its use into the personalized recommendation.
+
+Recommendations with Negative Feedback via Pairwise Deep Reinforcement Learning proposes something called DEERS for recommendation with both negative and positive feedback in a sequential interaction setting.
+Deep Reinforcement Learning for Page-wise Recommendations explores a framework called DeepPage that can adaptively optimize a page of items based on user’s real-time actions.
+DRN: A Deep Reinforcement Learning Framework for News Recommendation is a news recommendation system that uses Deep Reinforcement Learning to detect the dynamic changes of news content and user preference, incorporate return patterns of users, and increase the diversity of recommendation.
+9> Adversarial Networks Based Recommendation
+Adversarial Network is a generative neural network which consists of a discriminator and a generator. These two neural networks are trained simultaneously by competing with each other in a minimax game framework.
+
+
+IRGAN — A Minimax Game for Unifying Generative and Discriminative Information Retrieval Models is the first model that applies GAN to the information retrieval area. Specifically, the authors show the capability in 3 info retrieval tasks including web search, item recommendation, and question answering.
+Adversarial Personalized Ranking for Recommendation proposes an adversarial personalized ranking approach which enhances the Bayesian personalized ranking with adversarial training. It plays a minimax game between the original BPR objective and the adversary which adds noises or permutations to maximize the BPR loss.
+Generative Adversarial Network Based Heterogeneous Bibliographic Network Representation for Personalized Citation Recommendation uses a GAN-based representation learning approach for a heterogeneous bibliographic network that can effectively address the personalized citation recommendation task.
+Neural Memory Streaming Recommender Networks with Adversarial Training has GAN generating negative samples for the memory network-based streaming recommender.
+10> Deep Hybrid Models Based Recommendation
+With the good flexibility of deep neural networks, many neural building blocks can be integrated to formalize more powerful and expressive models. Recent research trends suggest that the hybrid model should be reasonably and carefully designed for specific tasks.
+
+
+Collaborative Knowledge-Based Embedding combines CNNs with autoencoders to extract features in images. It leverages structural content, textual content, and visual content with different embedding techniques.
+Quote Recommendation in Dialogue using Deep Neural Network is a hybrid model of RNNs and CNNs to recommend quotes, which entails generating a ranked list of quotes given the query texts or dialogues. It applies CNNs to learn the significant local semantics from tweets and maps them to a distributional vector. These vectors are then processed by LSTM to compute the relevance of target quotes to the given tweet dialogues.
+Personalized Key Frame Recommendation integrates CNNs and RNNs for personalized keyframe recommendation within videos, in which CNNs are used to learn feature representations from keyframe images, and RNNs are used to process the textual features.
+Neural Citation Network for Context-Aware Citation Recommendation integrates CNNs and RNNs in an encoder-decoder framework for citation recommendation. CNNs is the encoder that captures the long-term dependencies from citation context, while RNNs is the decoder that learns the probability of a word in the cited paper’s title given all previous words together with representations attained by CNNs.
+Collaborative Recurrent Autoencoder exploits integrating RNNs and denoising auto-encoder to overcome limitations such as lack of robustness and lack of capability to model the sequences of text information. The paper designs a generalization of RNNs called robust recurrent networks and proposes the hierarchical Bayesian recommendation model called CRAE. This model consists of encoding and decoding parts and uses feedforward neural layers with RNNs to capture the sequential information of item content.
+Supervised Reinforcement Learning with Recurrent Neural Network for Dynamic Treatment Recommendation combines supervised deep reinforcement learning with RNNs for a treatment recommendation. This framework can learn the prescription policy from the indicator signal and evaluation signal.
+Conclusion
+Deep learning has become more and more popular throughout many fields including natural language processing, image and video processing, computer vision, and data mining, which is a remarkable phenomenon since there has not been such a common approach to be used in solving different kinds of computing problems before. With such aspects of deep learning techniques, they are not only highly capable of remedying complex problems in many fields, but they also form a shared vocabulary and common ground for these research fields. Deep learning methods even help these subfields to collaborate with each other where it was a bit problematic in the past due to the diversity and complexity of utilized techniques.
+
+This article reviews the existing literature on deep learning-based recommender system approaches to help new researchers build a comprehensive understanding of the field, as collected in Shuai Zhang et al’s “Deep Learning based Recommender System: A Survey and New Perspectives” survey paper. Mainly, it classifies current literature in 10 categories based on the type of employed deep learning techniques, which I believe helps the reader constitute a holistic comprehension. I’d highly encourage you to read the survey paper to dig deeper into each of these categories.
+
+Part 3:
+Introduction
+In the past couple of years, we have seen a big change in the recommendation domain which shifted from traditional matrix factorization algorithms (c.f. Netflix Prize in 2009) to state-of-the-art deep learning-based methods. Currently, I am doing an internship for a startup that does video recommendation, and I can see clearly the main reasons behind such movement:
+
+The signals coming from users (such as views) are not independently distributed observations but can be represented as sequences of actions. Understanding and modeling efficiently these sequences using recurrent neural networks (RNN) was key to improving the accuracy of a video recommender system.
+Videos are often characterized by features (category of the video, description tags) which can be used to derive similarities between videos. Moreover, the context of the watch (device, country, …) is crucial in order to tailor the recommendation. Using them as features in a deep learning model has enabled faster convergence but also helped in the cold-start regime when no user signal is available for a given video.
+Feedback (watches) can only be observed on a given video when the video has been shown to the users (bandit feedback). As a consequence, I do not know what would have happened if I had selected other videos for a given user (counterfactual reasoning). Learning in this type of setting requires special paradigms such as off-policy learning or counterfactual learning which have been used a lot in reinforcement learning for example. Recently, several works have been studying “deep learning” based models in these settings.
+In this post and those to follow, I will be walking through the creation and training of recommendation systems, as I am currently working on this topic for my Master Thesis. In Part 1, I provided a high-level overview of recommendation systems, how they are built, and how they can be used to improve businesses across industries. In Part 2, I provided a nice review of the ongoing research initiatives with regard to the strengths and application scenarios of these models. Part 3 will address the limitations of using deep learning-based recommendation models by proposing a couple of research directions that might be relevant for the recommendation system scholar community.
+
+Drawbacks
+What are the drawbacks of using deep neural networks for a recommendation?
+
+Based on my research, there are 3 major issues:
+
+(1) A common objection of deep learning is that the hidden weights and activations are hard to interpret. Deep learning is well-known to behave like black boxes, and providing explainable predictions seem to be a really challenging task.
+
+(2) Deep learning also requires a lot of data to fully support its rich parameterization. As compared with other domains like vision and language, it is easy to gather a significant amount of data within the context of recommendation systems research.
+
+(3) Deep learning needs extensive hyper-parameter tuning, which is a common problem for machine learning in general.
+
+In order to tackle some of these problems, there have been a variety of research initiatives coming recently, and in this post, I will present 6 of them.
+
+1 — Evaluation Methods
+After reading an extensive amount of literature on recent publications presented at RecSys conferences, I noted that the choice of baseline models and evaluation datasets are quite arbitrary and up to the authors. The big issue with this is the obvious inconsistency in the reporting of scores, which makes the relative benchmark of new models extremely challenging.
+
+
+Why is there no MNIST or ImageNet equivalencies for recommendation systems? The most commonly used dataset seems to be MovieLens; however, even in such cases, the train and test splits are also arbitrary. Furthermore, there is no control over the difficulty of test samples in recommendation system results (randomly, chronologically, etc.) Without a proper standard to design test sets, it would be challenging to estimate and measure progress in the field.
+
+2 — Scalability For Large-Scale Settings
+Scalability is critical to the usefulness of recommendation systems in industry settings. To that end, recommendation models can definitely be more efficient by exploring these following problems:
+
+Incremental learning for non-stationary and streaming data (large volume of incoming users and items)
+Computational efficiency for high-dimensional tensors and multimedia data sources
+Balancing the complexity and scalability as the model’s parameters increase exponentially
+
+A promising research area is to use compression techniques to compact the embedding space of high-dimensional input data, which can reduce the computation time during model learning. Another promising approach is to distill knowledge to learn compact models for inference in recommendation systems. The key concept is to train a small student model that absorbs knowledge from a large teacher model.
+
+3 — Multi-Task Learning
+Multi-task learning is an approach in which multiple learning tasks are solved at the same time while exploiting commonalities and differences across tasks. It has been used successfully in many computer vision and natural language processing tasks. A couple of recent works have also applied this technique to the recommendation system:
+
+Ask The GRU: Multi-Task Learning for Deep Text Recommendations presents a method leveraging deep recurrent neural networks to encode the text sequence into a latent vector, specifically gated recurrent units (GRUs) trained end-to-end on the collaborative filtering task. For the task of scientific paper recommendation, this yields models with significantly higher accuracy.
+Neural Survival Recommender presents a model based on Long-Short Term Memory to estimate when a user will return to a site and what their future listening behavior will be. In doing so, it aims to solve the problem of Just-In-Time recommendation, that is, to recommend the right items at the right time. It uses tools from survival analysis for return time prediction and exponential families for future activity analysis.
+Neural Rating Regression with Abstractive Tips Generation for Recommendation proposes a deep learning-based framework named NRT which can simultaneously predict precise ratings and generate abstractive tips with good linguistic quality simulating user experience and feelings for E-Commerce sites. For abstractive tips generation, gated recurrent neural networks are employed to “translate” user and item latent representations into a concise sentence.
+Expanded autoencoder recommendation framework and its application in movie recommendation employ stacked auto-encoders to extract the feature of input then reconstitution the input to do the recommendation. Then the side information of items and users is blended in the framework and the Huber function based regularization is used to improve the recommendation performance.
+
+There are many advantages to using deep neural networks based on multi-task learning. It helps prevent overfitting by generalizing the shared hidden representations. It provides interpretable outputs for explaining the recommendation. It implicitly augments the data and thus alleviates the sparsity problem. Finally, we can deploy multi-task learning for cross-domain recommendations with each specific task generating recommendations for each domain (seen in the section below).
+
+4 — Domain Adaptation
+The single-domain recommendation system only focuses on one domain and ignores the user interests in other domains, which greatly exacerbates the sparsity and cold start problems. A tangible solution for these problems is to apply domain adaptation techniques, in which a model is assisted with the knowledge learned from source domains. A very popular and well-studied topic in this scenario is transfer learning, which can improve learning tasks in one domain by using knowledge transferred from other domains. Several existing works indicate the efficacy of deep learning in catching the generalizations and differences across different domains and generating better recommendations on cross-domain platforms.
+
+
+In “A multi-view deep learning approach for cross-domain user modeling in recommendation systems,” Microsoft Researchers propose a content-based recommendation system to address both the recommendation quality and the system scalability. They use a Deep Learning approach to map users and items to a latent space where the similarity between users and their preferred items is maximized, using a rich feature set to represent users, according to their web browsing history and search queries. They also show how to make this rich-feature based user representation scalable by reducing the dimension of the inputs and the amount of training data. The combination of different domains into a single model for learning helps improve the recommendation quality across all the domains, as well as having a more compact and semantically richer user latent feature vector.
+In “A Content-Boosted Collaborative Filtering Neural Network for Cross-Domain Recommender Systems,” Microsoft Researchers propose a cross-domain recommendation system named CCCFNet which can combine collaborative filtering and content-based filtering in a unified framework, thus overcoming the data sparsity problem.
+In my opinion, this is a promising research direction but is still largely under-explored for recommendation system research in general.
+
+5 — Explainability and Interpretability
+A common argument against deep learning is that the neural networks are highly non-interpretable. Thus, making explainable recommendations based on deep neural networks seem to be very challenging. There are mainly 2 ways that explainable deep learning is important.
+
+The first is to make explainable predictions to users and allow them to understand the factors behind the network’s recommendations. Interpretable convolutional neural networks with dual local and global attention for review rating prediction proposes to model user preferences and item properties using convolutional neural networks (CNNs) with dual local and global attention, motivated by the superiority of CNNs to extract complex features. By using aggregated review texts from a user and aggregated review text for an item, their model can learn the unique features (embedding) of each user and each item. These features are then used to predict ratings.
+The second is to understand more about the model by probing weights and activations. Latent Relational Metric Learning via Memory-based Attention for Collaborative Ranking proposes a model called Latent Relational Metric Learning which can learn latent relations that describe each user-item interaction. This helps to alleviate the potential geometric inflexibility of existing metric learning approaches. This enables not only better performance but also a greater extent of modeling capability, allowing their model to scale to a larger number of interactions.
+
+Recently, attentional models have contributed much to ease the non-interpretable concerns of neural models. For instance, Attentional Factorization Machines learn the importance of each feature interaction from data via a neural attention network. The attention weights not only give insights about the inner workings of the model but are also able to provide explainable results to users. Generally speaking, attentional models can both enhance performance but provide neat explainability, which further motivates its usage on deep learning-based recommendation systems.
+
+Noticeably, a model’s explainability and interpretability strongly rely on the application domain and usage of content information. Therefore, a promising research direction would be to design better attentional mechanisms, for example — conversational or generative explanations.
+
+6 — Joint Learning Framework
+Making accurate recommendations requires a deep understanding of item characteristics and the user’s actual demands and preferences. For example, context information can tailor services and products according to the user’s circumstances and surroundings, which helps mitigate the cold-start problem. Implicit feedback can indicate users’ implicit intention and complement the explicit feedback (which is a resource-demanding task). Such implicit feedback can be gathered from social media and the physical world, and deep learning can process these data sources while bringing more opportunities to recommend diverse items with unstructured data such as textual, visual, audio, and video features.
+
+Furthermore, deep learning can help greatly to automate feature engineering, which currently requires manual intervention in the recommendation research community. There is also an added advantage of representation learning from free texts, images, or data in the wild without having to design intricate feature engineering pipelines.
+
+
+A recent framework called Joint Representation Learning is capable of learning multi-modal representations of users and items. In this framework, each type of information source (review text, product image, numerical rating, etc) is adopted to learn the corresponding user and item representations based on available (deep) representation learning architectures. Representations from different sources are integrated with an extra layer to obtain the joint representations for users and items. In the end, both the per-source and the joint representations are trained as a whole using pair-wise learning to rank for the top-N recommendation. By representing users and items into embeddings offline, and using a simple vector multiplication for ranking score calculation online, JRL also has the advantage of fast online prediction compared with other deep learning approaches to a recommendation that learn a complex prediction network for online calculation. Therefore, another promising research direction is to design better inductive biases in an end-to-end pipeline, which can reason over different modalities data for better recommendation performance.
+
+Conclusion
+Deep learning has become more and more popular throughout all subfields of computer science, such as natural language processing, image and video processing, computer vision, and data mining, which is a remarkable phenomenon since there has not been such a common approach to be used in solving different kinds of computing problems before. With such an aspect of deep learning techniques, they are not only highly capable of remedying complex problems in many fields, but they also form a shared vocabulary and common ground for these research fields. Deep learning methods even help these subfields to collaborate with each other where it was a bit problematic in the past due to the diversity and complexity of utilized techniques.
+
+Although the application of deep learning into the recommendation systems field promises significant and encouraging results, challenges such as explainability and scalability are still open for improvements and warrant future work. Personally, I am heavily interested in the domain adaptation techniques being used to recommend items, and would like to see that ImageNet moment for RecSys. Stay tuned for future blog posts of this series that go in-depth on the nitty-gritty details of how these models work.
+
+Part 4:
+Collaborative filtering lies at the heart of any modern recommendation system, which has seen considerable success at companies like Amazon, Netflix, and Spotify. It works by collecting human judgments (known as ratings) for items in a given domain and matching together people who share the same information needs or the same tastes. Users of a collaborative filtering system share their analytical judgments and opinions regarding each item that they consume so that other users of the system can better decide which items to consume. In return, the collaborative filtering system provides useful personalized recommendations for new items.
+
+The two primary areas of collaborative filtering are (1) neighborhood methods and (2) latent factor models.
+
+Neighborhood methods focus on computing the relationships between items or between users. This approach evaluates a user’s preference for an item based on ratings of neighboring items by the same user. An item’s neighbors are other products that tend to get similar ratings when rated by the same user.
+Latent factor methods explain the ratings by characterizing both items and users on many factors inferred from the rating pattern. For example, in music recommendation, the discovered factors might measure precise dimensions such as hip-hop versus jazz, amount of high notes, or length of the song, as well as the less well-defined dimensions such as the meaning behind the lyrics, or completely uninterpretable dimensions. For users, each factor measures how much the user likes songs that score high on the corresponding song factor.
+Some of the most successful latent factor models are based on matrix factorization. In its natural form, matrix factorization characterizes items and users using vectors of factors inferred from item rating patterns. High correspondence between item and user factors leads to a recommendation.
+
+
+Sharmistha Chatterjee — Overview of Matrix Factorization Techniques using Python (https://towardsdatascience.com/overview-of-matrix-factorisation-techniques-using-python-8e3d118a9b39)
+In this post and those to follow, I will be walking through the creation and training of recommendation systems, as I am currently working on this topic for my Master Thesis.
+
+Part 1 provided a high-level overview of recommendation systems, how they are built, and how they can be used to improve businesses across industries.
+Part 2 provided a careful review of the ongoing research initiatives about the strengths and application scenarios of these models.
+Part 3 provided a couple of research directions that might be relevant to the recommendation system scholar community.
+In part 4, I dig into the nitty-gritty mathematical details of matrix factorization, arguably the most common baseline model for recommendation system research these days. More specifically, I will show you the seven variants of matrix factorization that can be constructed — ranging from the use of side features to the application of Bayesian methods.
+
+1 — Vanilla Matrix Factorization
+A straightforward matrix factorization model maps both users and items to a joint latent factor space of dimensionality D — such that user-item interactions are modeled as inner products in that space.
+
+Accordingly, each item i is associated with a vector q_i, and each user u is associated with a vector p_u.
+For a given item i, the elements of q_i measure the extent to which the item possesses those factors, positive or negative.
+For a given user u, the elements of p_u measure the extent of interest the user has in items that are high on the corresponding factors, positive or negative.
+The resulting dot product (q_i * p_u) captures the interaction between user u and item i, which is the user’s overall interest in the item’s characteristics.
+Thus, we have the equation 1 as follow:
+
+
+The big challenge is to compute the mapping of each item and user to factor vectors q_i and p_u. Matrix factorization does this by minimizing the regularized squared error on the set of known ratings, as seen in equation 2 below:
+
+
+The model is learned by fitting the previously observed ratings. However, the goal is to generalize those previous ratings in a way that predicts future/unknown ratings. Thus, we want to avoid overfitting the observed data by adding an L2 regularization penalty to each element and optimize the learned parameters simultaneously with stochastic gradient descent.
+
+This article by Shay Palachy did a great job explaining the intuition, based here are the quick notes:
+
+When we are using SGD to fit a model’s parameters to the learning problem at hand, we take a step in the solution space towards the gradient of the loss function with respect to the network’s parameters at each iteration of the algorithm. Since the user-item interaction matrix in our recommendations is very sparse, this method of learning might overfit to training data.
+L2 (also known as Tikhonov Regularization or Ridge Regression) is a specific way of regularizing a cost function with the addition of a complexity-representing term. The term is the squared Euclidean norm of the user and item latent factors. An additional parameter, \lambda, is added to allow control of the strength of the regularization.
+Adding the L2 term usually results in much smaller parameters across the entire model.
+Let’s see how this looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/Vanilla-MF
+
+2 — Matrix Factorization with Biases
+One benefit of the matrix factorization approach to collaborative filtering is its flexibility in dealing with various data aspects and other application-specific requirements. Recall that equation 1 attempts to capture the interactions between users and items that produce different rating values. However, much of the observed variation in the rating values are due to effects associated with either users or items, known as biases, independent of any interactions. The intuition behind this is that some users give high ratings than others, and some items received high ratings than others systematically.
+
+Thus, we can extend equation 1 to equation 3 as follows:
+
+
+The bias involved in the overall average rating is denoted by b.
+The parameters w_i and w_u indicate the observed deviations of item i and user u from the average, respectively.
+Note that the observed ratings are broken down into 4 components: (1) user-item interaction, (2) global average, (3) item bias, and (4) user bias.
+The model is learned by minimizing a new squared error function, as seen in equation 4 below:
+
+
+Let’s see how this looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/MF-Biases
+
+3 — Matrix Factorization with Side Features
+A common challenge in collaborative filtering is the cold start problem due to its inability to address new items and new users. Or many users are supplying very few ratings, making the user-item interaction matrix very sparse. A way to relieve this problem is to incorporate additional sources of information about the users, aka side features. These can be user attributes (demographics) and implicit feedback.
+
+Going back to my example, let’s say I know the occupation of the user. I have two choices for this side feature: adding it as a bias (artists like movies more than other occupations) and adding it as a vector (realtors love real estate shows). The matrix factorization model should integrate all signal sources with enhanced user representation, as seen in equation 5:
+
+
+The bias for occupation is denoted by d_o, meaning that occupation changes like rate.
+The vector for occupation is denoted by t_o, meaning that occupation changes depending on the item (q_i * t_o).
+Note that items can get a similar treatment when necessary.
+How does the loss function look like now? Equation 6 below shows that:
+
+
+Let’s see how this looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/MF-Side-Features
+
+4 — Matrix Factorization with Temporal Features
+So far, our matrix factorization models have been static. In reality, item popularity and user preferences change constantly. Therefore, we should account for the temporal effects reflecting the dynamic nature of user-item interactions. To accomplish this, we can add a temporal term that affects user preferences and, therefore, the interaction between users and items.
+
+To mix it up a bit, let’s try out a new equation 7 below with dynamic prediction rule for a rating at time t:
+
+
+p_u (t) takes user factors as a function of time. On the other hand, q_i stays the same because items are static.
+We have occupation changes depending on the user (p_u * t_o).
+Equation 8 displays the new loss function that incorporates the temporal features:
+
+
+Let’s see how this looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/MF-Temporal-Features
+
+5 — Factorization Machines
+One of the more powerful techniques for the recommendation system is called Factorization Machines, which have a robust, expressive capacity to generalize Matrix Factorization methods. In many applications, we have plenty of item metadata that can be used to make better predictions. This is one of the benefits of using Factorization Machines with feature-rich datasets, for which there is a natural way in which extra features can be included in the model, and higher-order interactions can be modeled using the dimensionality parameter d. For sparse datasets, a second-order Factorization Machine model suffices, since there is not enough information to estimate more complex interactions.
+
+
+Berwyn Zhang — Factorization Machines (http://berwynzhang.com/2017/01/22/machine_learning/Factorization_Machines/)
+Equation 9 shows what a second order FM model looks like:
+
+
+where the v’s represent k-dimensional latent vectors associated with each variable (users and items), and the bracket operator represents the inner product. Following Steffen Rendle’s original paper on Factorization Machines, if we assume that each x(j) vector is only non-zero at positions u and i, we get the classic Matrix Factorization model with biases (equation 3):
+
+
+The main difference between these two equations is that Factorization Machines introduce higher-order interactions in terms of latent vectors that are also affected by categorical or tag data. This means that the models go beyond co-occurrences to find stronger relationships between the latent representations of each feature.
+
+The loss function for the Factorization Machines model is simply the sum of mean squared error and feature set, as shown in equation 10:
+
+
+Let’s see how this looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/Factorization-Machines
+
+6 — Matrix Factorization with Mixture of Tastes
+The techniques presented so far implicitly treat user tastes as unimodal — aka in a single latent vector. This may lead to a lack of nuance in representing the user, where a dominant taste may overpower more niche ones. Additionally, this may reduce the quality of item representations, decreasing the separation in the embedding space between groups of items belonging to multiple tastes/genres.
+
+Maciej Kula proposes and evaluates representing users as mixtures if several distinct tastes, represented by different taste vectors. Each of the taste vectors is coupled with an attention vector, describing how competent it is at evaluating any given item. The user’s preference is then modeled as a weighted average of all the user’s tastes, with the weights provided by how relevant each taste is to evaluate a given item.
+
+Equation 11 gives a mathematical formula for this mixture-of-taste model:
+
+
+U_u is a m x k matrix representing the m tastes of user u.
+A_u is a m x k matrix representing the affinities of each taste from U_u for representing particular items.
+\sigma is the soft-max activation function.
+\sigma(A_u * q_i) gives the mixture probabilities.
+U_u * q_i gives the recommendation scores for each mixture component.
+Note that we assume identity variance matrices for all mixture components.
+So equation 12 below captures the loss function:
+
+
+Let’s see how this looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/MF-Mixture-Tastes
+
+7 — Variational Matrix Factorization
+The last variant of matrix factorization that I want to present is called Variational Matrix Factorization. While most of what the blog post has discussed so far is about optimizing a point estimate of the model parameters, variational is about optimizing a posterior, which loosely speaking expresses a spectrum of model configurations that are consistent with the data.
+
+Here are the practical reasons to go variational:
+
+Variational methods can provide alternative regularization.
+Variational methods can measure what your model doesn’t know.
+Variational methods can reveal entailment as well as novel ways of grouping data.
+We can make the matrix factorization in equation 3 variational by: (1) Replace point estimates with samples from a distribution, and (2) Replace regularizing that point with regularizing the new distribution. The math is quite complicated, so I won’t attempt to explain it in this blog post. The Wikipedia page on Variational Bayesian methods is a helpful guide to start. The most common type of variational Bayes uses the Kullback-Leibler divergence as the choice of dis-similarity function, which makes the loss minimization tractable.
+
+Let’s see how that looks like in code:
+
+
+The full experiment for this model can be accessed here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Matrix-Factorization-Experiments/Variational-MF
+
+Model Evaluation
+
+You can check out all 7 Matrix Factorization experiments that I did for the MovieLens1M dataset at this repository. All models were trained for 50 epochs and the results were captured in TensorBoard. The evaluation metric is Mean Squared Error, which is calculated to be the sum of all squared differences between the predicted ratings and the actual ratings.
+
+The result table is at the bottom of the README, and as you can see:
+
+Variational Matrix Factorization has the lowest training loss.
+Matrix Factorization with Side Features has the lowest test loss.
+Factorization Machines has the fastest training time.
+Conclusion
+In this post, I have discussed the intuitive meaning of matrix factorization and its use in collaborative filtering. I also talked about many different extensions to it: (1) Adding biases, (2) Adding side features, (3) Adding temporal features, (4) Upgrading to Factorization Machines to take advantage of higher-order interactions, (5) Using a mixture of tastes with “attention” mechanism, and (6) Making the model variational. I hope that you have found this mathematical deep-dive into the world of matrix factorization helpful. Stay tuned for future blog posts of this series that go beyond the realm of matrix factorization and into the deep learning approaches to collaborative filtering.
+
+Part 5:
+Collaborative Filtering algorithms are most commonly used in the applications of Recommendation Systems. Due to the use of the Internet and the enormous amount of information that is generated, it becomes a very tedious task for users to find their preferences. Users’ preferences for items are represented in the form of a rating matrix, which is used to build the relation between users and items to find users’ relevant items. Thus, collaborative filtering algorithms nowadays face the problem with large datasets and sparseness in the rating matrix.
+
+Among the various collaborative filtering techniques, matrix factorization is the most popular one, which projects users and items into a shared latent space, using a vector of latent features to represent a user or an item. After that, a user’s interaction on an item is modeled as the inner product of their latent vectors.
+
+
+Kiran Shivlingkar — How Spotify Discovery Algorithm Works (https://blog.prototypr.io/how-spotify-discovery-algorithm-works-fae8f63466ab)
+Despite the effectiveness of matrix factorization for collaborative filtering, it is well-known that its performance can be hindered by the simple choice of the interaction function: the inner product. For example, for the task of rating prediction on explicit feedback, it is well known that the performance of the matrix factorization model can be improved by incorporating user and item bias terms into the interaction function. While it seems to be just a trivial tweak for the inner product operator, it points to the positive effect of designing a better, dedicated interaction function for modeling the latent feature interactions between users and items. The inner product, which simply combines the multiplication of latent features linearly, may not be sufficient to capture the complex structure of user interaction data.
+
+In this post and those to follow, I will be walking through the creation and training of recommendation systems, as I am currently working on this topic for my Master Thesis.
+
+Part 1 provided a high-level overview of recommendation systems, how they are built, and how they can be used to improve businesses across industries.
+Part 2 provided a careful review of the ongoing research initiatives concerning the strengths and application scenarios of these models.
+Part 3 provided a couple of research directions that might be relevant to the recommendation system scholar community.
+Part 4 provided the nitty-gritty mathematical details of 7 variants of matrix factorization that can be constructed: ranging from the use of clever side features to the application of Bayesian methods.
+
+Awhan Mohanty — MLP Models on Real-World Banking Data (https://becominghuman.ai/multi-layer-perceptron-mlp-models-on-real-world-banking-data-f6dd3d7e998f)
+In Part 5, I explore the use of Multilayer Perceptron for collaborative filtering. A multi-layer perceptron is a feed-forward neural network with multiple hidden layers between the input layer and the output layer. It can be interpreted as a stacked layer of non-linear transformations to learn hierarchical feature representations. It is a concise but practical network that can approximate any measurable function to any desired degree of accuracy (a phenomenon known as Universal Approximation Theorem). As such, it is the basis of numerous advanced approaches and is widely used in many areas.
+
+More specifically, I will walk through 5 papers that incorporate Multi-layer Perceptron into their recommendation framework.
+
+1 — Wide and Deep Learning
+Memorization and generalization are both critical for recommender systems. The paper “Wide and Deep Learning for Recommender Systems” (2016) by Google proposes a framework to combine the strengths of wide linear models and deep neural networks to address both issues. This framework has been production-ized and evaluated on the recommender system of Google Play, a massive-scale commercial app store.
+
+As shown in the figure below, the wide learning component is a single-layer perceptron which can effectively memorize sparse feature interactions using cross-product feature transformations. The deep learning component is a multi-layer perceptron that can generalize to previously unseen feature interactions through low-dimensional embeddings.
+
+
+Google Inc. — Wide & Deep Learning for Recommender Systems (https://arxiv.org/pdf/1606.07792.pdf)
+Mathematically speaking, wide learning is defined as:
+
+
+where y is the prediction, x is a vector of features, W is a vector of model parameters, and b is the bias. The feature set includes both raw inputs and transformed inputs (via cross-product transformation to capture the correlation between features).
+
+In the deep learning component, each hidden layer performs the following computation:
+
+
+where l is the layer number, f is the activation function, a_l is the vector of activations, b_l is the vector of biases, and W_l is the vector of model weights at the l-th layer.
+
+The wide and deep learning model is attained by fusing these models:
+
+
+where Y is the binary class label, W_{wide} is the vector of all wide model weights, W_{deep} is the vector of weights applied on the final activation a_{last}, and b is the bias term.
+
+Let’s see how this looks like in code:
+
+
+Full PyTorch implementation of this approach can be view here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Multilayer-Perceptron-Experiments/Wide-and-Deep-PyTorch.
+
+2 — Deep Factorization Machine
+As an extension of the Wide and Deep Learning approach, “DeepFM: A Factorization-Machine Based Neural Network for CTR Prediction” (2017) by Huifeng Guo et al. is an end-to-end model that seamlessly integrates Factorization Machine (the wide component) and Multi-Layer Perceptron (the deep component). Compared to the Wide and Deep Model, DeepFM does not require tedious feature engineering.
+
+As shown in the figure below, the Factorization Machine utilizes addition and inner product operations to capture the linear and pairwise interactions between features. The Multi-Layer Perceptron leverages the non-linear activations and deep structure to model the high-order interactions.
+
+
+Huifeng Guo et al. — DeepFM: A Factorization-Machine based Neural Network for CTR Prediction (https://arxiv.org/pdf/1703.04247.pdf)
+Mathematically speaking, the input of DeepFM is an m-fields data consisting of pairs (u, i) — which are the identity and features of user and item, as well as a binary label y that indicates user click behaviors (y = 1 means the user clicked the item, and y = 0 otherwise). The task here is to build a prediction model to estimate the probability of a user clicking a specific app in a given context.
+
+For any particular feature i, a scalar w_i is used to weigh its 1st-order importance, and a latent vector V_i is used to measure its impact of interactions with other features. V_i is fed in the wide component to model 2nd-order feature interactions, and fed in the deep component to model high-order feature interactions. All parameters, including w_i, V_i, and the network parameters are trained jointly for the combined prediction model:
+
+
+where y_hat is the predicted CTR (between 0 and 1), y_{FM} is the output of the wide Factorization Machine component, and y_{DNN} is the output of the Multi-Layer Perceptron component.
+
+In the wide component, besides a linear (1st-order) interactions among features, the Factorization Machine models pairwise (2nd-order) feature interactions as the inner product of respective feature latent vectors. This helps capture 2nd-order feature interactions very effectively when the dataset is sparse. The output of Factorization Machine is the summation of an Addition unit and several Inner Product units:
+
+
+with given features i and j. The Addition unit (first term) reflects the importance of 1st-order features, and the Inner Product units (second term) represent the impact of 2nd-order feature interactions.
+
+In the deep component, the output of the Multi-Layer Perceptron looks like this:
+
+
+where |H| is the number of hidden layers, a is the vector output of the embedding layer, W is the vector of model weights, and b is the vector of bias units.
+
+Let’s see how this looks like in code:
+
+
+Full PyTorch implementation of this approach can be view here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Multilayer-Perceptron-Experiments/DeepFM-PyTorch.
+
+3 — Extreme Deep Factorization Machine
+As an extension of the Deep Factorization Machine, “xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems” (2018) from Jianxun Lian et al. can jointly model the explicit and implicit feature interactions. The explicit high-order feature interactions are learned via a Compressed Interaction Network, while the implicit high-order feature infractions are learned via a Multi-Layer Perceptron. This model also requires no manual feature engineering and releases data scientists from tedious feature searching work.
+
+The Compressed Interaction Network is designed with the following considerations:
+
+Interactions are applied at a vector-wise level, not at the bit-wise level.
+High-order feature interactions are measured explicitly.
+The complexity of the network will not grow exponentially with the degree of interactions.
+The structure of the Compressed Interaction Network is very similar to the Recurrent Neural Network, where the outputs of the next hidden layer are dependent on the last hidden layer and additional input. The structure of embedding vectors at all layers is kept in the status quo; thus, the interactions are applied at the vector-wise level.
+
+
+Jianxun Lian et al. — xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems (https://arxiv.org/pdf/1803.05170.pdf)
+Looking at the figure 4a above, the intermediate tensor Z^{k+1} is the outer products along each embedding dimension of the hidden layer x^k and original feature matrix x⁰. The process to calculate each hidden layer x^k has a strong connection with the well-known Convolutional Neural Network in computer vision. Here, Z^{k+1} can be regarded as a special type of image, and W^{k, h} is a filter.
+As seen in figure 4b, the authors slide the filter across Z^{k+1} along the embedding dimension and get a hidden vector x^{k+1} — which is usually called a feature map in computer vision. Therefore, x^k is a collection of H_k different feature maps.
+Figure 4c provides an overview of the architecture of the Compressed Interaction Network. Let T denote the depth of the network. Every hidden layer X^k has a connection with output units. The authors apply sum pooling on each feature map of the hidden layer and get a pooling vector p^k with length H_k for the k-th hidden layer. All pooling vectors from hidden layers are concatenated before connected to output units: p+ = [p¹, p², …, p^T]
+xDeepFM combines the Compressed Interaction Network above with plain Multi-Layer Perceptrons via the wide and deep learning framework. On the one hand, this model includes both low-order and high-order feature interactions; on the other hand, it also contains both implicit and explicit feature interactions. The architecture is shown here.
+
+
+Jianxun Lian et al. — xDeepFM: Combining Explicit and Implicit Feature Interactions for Recommender Systems (https://arxiv.org/pdf/1803.05170.pdf)
+Mathematically speaking, the resulting output unit is:
+
+
+where a is the vector of raw features, x_{mlp} is the vector of outputs from the plain Multi-Layer Perceptron, p+ is the vector of outputs from the Cross Interaction Network. W and b are the learnable parameters — weights and biases, respectively.
+
+Let’s see how this looks like in code:
+
+
+Full PyTorch implementation of this approach can be view here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Multilayer-Perceptron-Experiments/xDeepFM-PyTorch
+
+4 — Neural Factorization Machines
+Another parallel work that seamlessly integrates Factorization Machines and Multi-Layer Perceptron is Xiangnan He and Tat-Seng Chua’s “Neural Factorization Machines for Sparse Predictive Analytics” (2017). This model brings together the effectiveness of linear factorization machines with the strong representation ability of non-linear neural networks for sparse predictive analytics.
+
+As seen below, the key to its architecture is an operation called Bilinear-Interaction pooling that allows a neural network model to learn more informative feature interactions at the lower level. Through stacking non-linear layers above the Bilinear-Interaction layer, the authors were able to deepen the shallow linear Factorization Machine, modeling higher-order, and non-linear feature interactions effectively to improve Factorization Machine’s expressiveness. In contrast to traditional deep learning methods that simply concatenate or average embedding vectors in the low level, this use of Bilinear-Interaction pooling encodes more informative feature interactions, greatly facilitating the following “deep” layers to learn meaningful information.
+
+
+Xiangnan He et al. — Neural Factorization Machines for Sparse Predictive Analytics (https://arxiv.org/pdf/1708.05027.pdf)
+Let’s dive into the math of the Neural Factorization Machine model. Given a sparse vector x as input, the model estimates the target as:
+
+
+where the first term models global bias of data of features, the second term models global bias of weight of features, and the third term f(x) is a Multi-Layer Perceptron (as shown in figure 2) that models feature interactions. The design of f(x) consists of these layer components:
+
+Embedding Layer
+This is a fully-connected layer that projects each feature to a dense vector representation. Let v_i be the embedding vector for the i-th feature. Then after the embedding step, the authors obtain a set of embedding vectors to represent the input feature vector x.
+
+
+Due to the possible sparse representation of x, the authors only include the embedding vectors for non-zero features, where x_i does not equal to 0.
+
+Bilinear-Interaction Layer
+Then the embedding set V_x is fed into a Bilinear-Interaction layer, which is a pooling operation that converts a set of embedding vectors to one vector:
+
+
+where v_i.x_j denotes the element-wise product of two vectors v_i and x_j. The output of this pooling is a k-dimension vector that encodes the second-order interactions between features in the embedding space.
+
+Hidden Layers
+Above the Bilinear-Interaction pooling layer is a stack of fully-connected layers, which are capable of learning higher-order interactions between features. The definition of these hidden layers is:
+
+
+
+
+where L is the number of hidden layers; W_L, b_L, and activation_L correspond to the weight matrix, bias vector, and activation function for the l-th layer, respectively. The choice of activation functions can be sigmoid, tanh, or ReLU to learn higher-order feature interactions non-linearly.
+
+Prediction Layer
+Lastly, the output vector of the last hidden layer z_L is transformed into the final prediction score:
+
+
+where h^T denotes the neuron weights of the prediction layer.
+
+Let’s see how this looks like in code:
+
+
+Full PyTorch implementation of this approach can be view here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Multilayer-Perceptron-Experiments/Neural-FM-PyTorch
+
+5 — Neural Collaborative Filtering
+The paper “Neural Collaborative Filtering“ (2018) by Xiangnan He et al. pushed the use of multi-layer perceptrons for learning the interaction function from data one step further. Note here that they are also the same authors of the Neural Factorization Machine paper mentioned above. They formalized a modeling approach for collaborative filtering that focuses on the implicit feedback, which indirectly reflects users’ preference through behaviors like watching videos, purchasing products, and clicking items. Compared to explicit feedback such as ratings and reviews, implicit feedback can be tracked automatically and is thus much more natural to collect for content providers. However, it is more challenging to utilize since user satisfaction is not observed, and there is an inherent scarcity of negative feedback.
+
+The user-item interaction value y_ui to model users’ implicit feedback can be either 1 or 0. A value of 1 indicates that there is an interaction between user u and item i, but it does not mean u likes i. This poses challenges in learning from implicit data since it provides only noisy signals about users’ preferences. While observed entries at least reflect users’ interest in items, the unobserved entries can be just missing data, and there is a natural scarcity of negative feedback.
+
+The authors adopt a multi-layer representation to model a user-item interaction y_ui, as shown below, where the output of one layer serves as the input of the next one.
+
+The bottom input layer consists of 2 feature vectors that describe user u and item i, which can be customized to support a wide range of modeling of users and items. In particular, the paper uses only the identity of a user and an item as the input feature, transforming it into a binarized sparse vector with one-hot encoding. With such a generic feature representation for inputs, this framework can be easily adjusted to address the cold-start problem by using content features to represent users and items.
+Above the input layer is the embedding layer — a fully connected layer that projects the sparse representation to a dense vector. The obtained user/item embedding can be seen as the latent vector for user/item in the context of the latent factor model.
+The user embedding and item embedding are then fed into a multi-layer neural architecture (termed Neural Collaborative Filtering layers) to map the latent vectors to prediction scores. Each layer of the neural collaborative filtering layers can be customized to discover the specific latent structure of user-item interactions. The dimension of the last hidden layer X determines the model’s capability.
+The final output layer is the predicted score y-hat_ui, and training is performed by minimizing the pointwise loss between y-hat_ui and its target value y_ui.
+
+Xiangnan He et al. — Neural Collaborative Filtering (https://www.comp.nus.edu.sg/~xiangnan/papers/ncf.pdf)
+The above framework can be summed up with the scoring function below:
+
+
+where y-hat_ui is the predicted score of interaction y_ui, and theta denotes the model parameters. f is the multi-layer perceptron that maps model parameters to the predicted score. More specifically, P is the latent-factor matrix for users, Q is the latent-factor matrix for items, v_u^U is the side information associated with user features, and v_i^I is the side information associated with item features.
+
+The paper argues that traditional matrix factorization can be viewed as a special case of Neural Collaborative Filtering. Therefore, it is convenient to fuse the neural interpretation of matrix factorization with Multi-Layer Perceptron to formulate a more general model which makes use of both linearity of Matrix Factorization and non-linearity of Multi-Layer Perceptron to enhance recommendation quality.
+
+Let’s see how this looks like in code:
+
+
+Full PyTorch implementation of this approach can be view here: https://github.com/khanhnamle1994/transfer-rec/tree/master/Multilayer-Perceptron-Experiments/Neural-CF-PyTorch-Version2.
+
+Model Evaluation
+You can check out all five multi-layer perceptron-based recommendation models that I built at this repository: https://github.com/khanhnamle1994/transfer-rec/tree/master/Multilayer-Perceptron-Experiments.
+
+The dataset is MovieLens 1M, similar to my Matrix Factorization experiments in my last article. The goal is to predict ratings of a user for a particular movie — where ratings are on the 1 to 5 scale.
+The only difference is that, to use the Factorization Machine-based models that are designed for click-through rate prediction, I use binary ratings. Ratings less than equal to 3 are deemed to be 0, and ratings bigger than 3 are considered to be 1.
+The evaluation metric, therefore, is AUC, considering this is a binary classification problem (instead of RMSE like last time).
+All models were trained for 100 epochs, and the results were captured in Weights and Biases. For those that are not familiar, it is a brilliant tool that stores all model hyper-parameters and output metrics in one place to track experiments and reproduce results effortlessly.
+
+The result table is at the bottom of the README, and as you can see from the Weights and Biases dashboard visualization:
+
+Wide and Deep Learning model has the best AUC result in both test and validation set.
+On the other hand, extreme Deep Factorization Machine has the lowest AUC, respectively.
+Neural Collaborative Filtering has the fastest runtime, and extreme Deep Factorization Machine has the slowest runtime.
+
+Conclusion
+In this post, I have discussed the intuitive meaning of Multi-Layer Perceptron and its use in collaborative filtering. I also walked through 5 different papers that use MLP for the recommendation framework: (1) Wide and Deep Learning, (2) Deep Factorization Machine, (3) Extreme Deep Factorization Machine, (4) Neural Factorization Machine, and (5) Neural Collaborative Filtering. These models complement the mainstream shallow models for collaborative filtering, thus opening up a new avenue of research possibilities for recommendations based on deep learning.
+
+Stay tuned for future blog posts of this series that go beyond discriminative models and enter the realm of generative models for collaborative filtering.
+
+Part 6:
+Many recommendation models have been proposed during the last few years. However, they all have their limitations in dealing with data sparsity and cold-start issues.
+
+The data sparsity occurs when the recommendation performance drops significantly if the interactions between users and items are very sparse.
+The cold-start issues occur when the model can’t recommend new users and new items.
+To solve these problems, recent approaches have exploited side information about users or items. However, the improvement of the recommendation performance is not significant due to the limitations of such models in capturing the user preferences and item features.
+
+
+Rebecca Heilweil — There’s something strange about TikTok recommendations (https://www.vox.com/recode/2020/2/25/21152585/tiktok-recommendations-profile-look-alike)
+Auto-encoder is a type of neural network suited for unsupervised learning tasks, including generative modeling, dimensionality reduction, and efficient coding. It has shown its superiority in learning underlying feature representation in many domains, including computer vision, speech recognition, and language modeling. Given that knowledge, new recommendation architectures have incorporated autoencoder and thus brought more opportunities in re-inventing user experiences to satisfy customers.
+
+While traditional models deal only with a single data source (rating or text), auto-encoder based models can handle heterogeneous data sources (rating, audio, visual, video).
+Auto-encoder has a better understanding of the user demands and item features, thus leading to higher recommendation accuracy than traditional models.
+Furthermore, auto-encoder helps the recommendation model to be more adaptable in multi-media scenarios and more effective in handling input noises than traditional models.
+In this post and those to follow, I will be walking through the creation and training of recommendation systems, as I am currently working on this topic for my Master Thesis.
+
+Part 1 provided a high-level overview of recommendation systems, how to build them, and how they can be used to improve businesses across industries.
+Part 2 provided a careful review of the ongoing research initiatives concerning the strengths and application scenarios of these models.
+Part 3 provided a couple of research directions that might be relevant to the recommendation system scholar community.
+Part 4 provided the nitty-gritty mathematical details of 7 variants of matrix factorization that you can construct: ranging from the use of clever side features to the application of Bayesian methods.
+Part 5 provided the architecture design of 5 variants of multi-layer perceptron based collaborative filtering models, which are discriminative models that can interpret the features in a non-linear fashion.
+In Part 6, I explore the use of Auto-Encoders for collaborative filtering. More specifically, I will dissect six principled papers that incorporate Auto-Encoders into their recommendation architecture. But first, let’s walk through a primer on auto-encoder and its variants.
+
+A Primer on Auto-encoder and Its Variants
+As illustrated in the diagram below, a vanilla auto-encoder consists of an input layer, a hidden layer, and an output layer. The input data is passed into the input layer. The input layer and the hidden layer constructs an encoder. The hidden layer and the output layer constructs a decoder. The output data comes out of the output layer.
+
+
+Autoencoder Architecture
+The encoder encodes the high-dimensional input data x into a lower-dimensional hidden representation h with a function f:
+
+
+Equation 1
+where s_f is an activation function, W is the weight matrix, and b is the bias vector.
+
+The decoder decodes the hidden representation h back to a reconstruction x’ by another function g:
+
+
+Equation 2
+where s_g is an activation function, W’ is the weight matrix, and b’ is the bias vector.
+
+The choices of s_f and s_g are non-linear, for example, Sigmoid, TanH, or ReLU. This allows auto-encoder to learn more useful features than other unsupervised linear approaches, say Principal Component Analysis.
+
+I can train the auto-encoder to minimize the reconstruction error between x and x’ via either the squared error (for regression tasks) or the cross-entropy error (for classification tasks).
+
+This is the formula for the squared error:
+
+
+Equation 3
+This is the formula for the cross-entropy error:
+
+
+Equation 4
+Finally, it is always a good practice to add a regularization term to the final reconstruction error of the auto-encoder:
+
+
+Equation 5
+The reconstruction error function above can be optimized via either stochastic gradient descent or alternative least square.
+
+There are many variants of auto-encoders currently used in recommendation systems. The four most common are:
+
+Denoising Autoencoder (DAE) corrupts the inputs before mapping them into the hidden representation and then reconstructs the original input from its corrupted version. The idea is to force the hidden layer to acquire more robust features and to prevent the network from merely learning the identity function.
+Stacked Denoising Autoencoder (SDAE) stacks several denoising auto-encoder on top of each other to get higher-level representations of the inputs. The training is usually optimized with greedy algorithms, going layer by layer. The apparent disadvantages here are the high computational cost of training and the lack of scalability to high-dimensional features.
+Marginalized Denoising Autoencoder (MDAE) avoids the high computational cost of SDAE by marginalizing stochastic feature corruption. Thus, it has a fast training speed, simple implementation, and scalability to high-dimensional data.
+Variational Autoencoder (VAE) is an unsupervised latent variable model that learns a deep representation from high-dimensional data. The idea is to encode the input as a probability distribution rather than a point estimate as in vanilla auto-encoder. Then VAE uses a decoder to reconstruct the original input by using samples from that probability distribution.
+
+Variational Autoencoder Architecture
+Okay, it’s time to review the different auto-encoder based recommendation framework!
+
+1 — AutoRec
+One of the earliest models that consider the collaborative filtering problem from an auto-encoder perspective is AutoRec from “Autoencoders Meet Collaborative Filtering” by Suvash Sedhain, Aditya Krishna Menon, Scott Sanner, and Lexing Xie.
+
+In the paper’s setting, there are m users, n items, and a partially filled user-item interaction/rating matrix R with dimension m x n. Each user u can be represented by a partially filled vector rᵤ and each item i can be represented by a partially filled vector rᵢ. AutoRec directly takes user rating vectors rᵤ or item rating rᵢ as input data and obtains the reconstructed rating at the output layer. There are two variants of AutoRec depending on two types of inputs: item-based AutoRec (I-AutoRec) and user-based AutoRec (U-AutoRec). Both of them have the same structure.
+
+
+Suvesh Sedhain et al. — AutoRec: Autoencoders Meet Collaborative Filtering (https://dl.acm.org/doi/10.1145/2740908.2742726)
+Figure 1 from the paper illustrates the structure of I-AutoRec. The shaded nodes correspond to observed ratings, and the solid connections correspond to weights that are updated for the input rᵢ.
+
+Given the input rᵢ, the reconstruction is:
+
+
+Equation 6
+where f and g are the activation functions, and the parameter Theta includes W, V, mu, and b.
+
+AutoRec uses only the vanilla auto-encoder structure. The objective function of the model is similar to the loss function of auto-encoder:
+
+
+Equation 7
+This function can be optimized by resilient propagation (converges faster and produces comparable results) or L-BFGS (Limited-memory Broyden Fletcher Goldfarb Shanno algorithm).
+
+Here are some important things about AutoRec:
+
+I-AutoRec generally performs better than U-AutoRec. This is because the average number of ratings for each item is much more than the average number of ratings given by each user.
+Different combinations of activation functions affect the performance of AutoRec considerably.
+Increasing the number of hidden neurons or the number of layers improves model performance. This makes sense as expanding the dimensionality of the hidden layer allows AutoRec to have more capacity to simulate the input features.
+Adding more layers to formulate a deep network can lead to slight improvement.
+The TensorFlow code of the AutoRec model class is given below for illustration purpose:
+
+
+For my TensorFlow implementation, I trained AutoRec architecture with a hidden layer of 500 units activated by a sigmoid non-linear function. Other hyper-parameters include a learning rate of 0.001, a batch size of 512, the Adam optimizer, and a lambda regularizer of 1.
+
+2 — DeepRec
+DeepRec is a model created by Oleisii Kuchaiev and Boris Ginsburg from NVIDIA, as seen in “Training Deep Autoencoders for Collaborative Filtering.” The model is inspired by the AutoRec model described above, with several important distinctions:
+
+The network is much deeper.
+The model uses “scaled exponential linear units” (SELUs).
+The dropout rate is high.
+The authors use iterative output re-feeding during training.
+
+Oleisii Kuchaiev and Boris Ginsburg — Training Deep Autoencoders for Collaborative Filtering (https://arxiv.org/abs/1708.01715)
+2.1 — Model
+The figure above depicts a typical 4-layer autoencoder network. The encoder has 2 layers e_1 and e_2, while the decoder has 2 layers d_1 and d_2. They are fused together on the representation z. The layers are represented as f(W * x + b), where f is some non-linear activation function. If the range of the activation function is smaller than that of the data, the last layer of the decoder should be kept linear. The authors found it to be very important for activation function f in hidden layers to contain a non-zero negative part, and use SELU units in most of their experiments.
+
+2.2 — Loss Function
+Since it doesn’t make sense to predict zeros in user’s representation vector x, the authors optimize the Masked Mean Squared Error loss:
+
+
+Equation 8
+where r_i is the actual rating, y_i is the reconstructed rating, and m_i is a mask function such that m_i = 1 if r_i is not 0 else m_i = 0.
+
+2.3 — Dense Re-feeding
+
+During forward pass and inference pass, the model takes a user represented by his vector of ratings from the training set x. Note that x is very sparse, while the output of the decoder f(x) is dense and contains rating predictions for all items in the corpus. Thus, to explicitly enforce fixed-point constraint and perform dense training updates, the authors augment every optimization iteration with an iterative dense re-feeding step as follows:
+
+During the initial forward pass, given sparse input x, the model computes the dense output f(x) and the MMSE loss using equation 8.
+During the initial backward pass, the model computes the gradients and updates the weights accordingly.
+During the second forward pass, the model treats f(x) as a new data point and thus computes f(f(x)). Both f(x) and f(f(x)) become dense. The MMSE loss now has all m as non-zeros.
+During the second backward pass, the model again computes the gradients and updates the weights accordingly.
+The TensorFlow code of the DeepRec model definition is given below for illustration purpose:
+
+
+For my TensorFlow implementation, I trained DeepRec with the following architecture: [n, 512, 512, 1024, 512, 512, n]. So n is the number of ratings that the user has given, the encoder has 3 layers of size (512, 512, 1034), the bottleneck layer has size 1024, and the decoder has 3 layers of size (512, 512, n). I trained the model using stochastic gradient descent with a momentum of 0.9, a learning rate of 0.001, a batch size of 512, and a dropout rate of 0.8. Parameters are initialized via the Xavier initialization scheme.
+
+3 — Collaborative Denoising Auto-encoder
+“Collaborative Denoising Autoencoders for Top-N Recommender Systems” by Yao Wu, Christopher DuBois, Alice Zheng, and Martin Ester is a neural network with one hidden layer. Compared to AutoRec and DeepRec, CDAE has the following differences:
+
+The input of CDAE is not user-item ratings, but partially observed implicit feedback r (user’s item preference). If a user likes a movie, the corresponding entry value is 1, otherwise 0.
+Unlike the previous two models that are used for rating prediction, CDAE is principally used for ranking prediction (also called Top-N preference recommendations).
+
+Yao Wu et al. — Collaborative Denoising Autoencoders For Top-N Recommender Systems (https://dl.acm.org/doi/10.1145/2835776.2835837)
+3.1 — Model
+The figure above shows a sample structure of CDAE, which consists of 3 layers: the input, the hidden, and the output.
+
+There are a total of I + 1 nodes in the input layer. The first I nodes represent user preferences, and each node of these I nodes corresponds to an item. The last node is a user-specific node denoted by the red node in the figure above, which means different users have different nodes and associated weights.
+Here yᵤ is the I-dimensional feedback vector of user u on all the items in I. yᵤ is a sparse binary vector that only has non-zero values: yᵤᵢ = 1 if i has been rated by user u and yᵤᵢ = 0 otherwise.
+There are K (<< I) + 1 nodes in the hidden layer. The blue K nodes are fully connected to the nodes of the input layer. The pink additional node in the hidden layer captures the bias effects.
+In the output layer, there are I nodes which are the reconstructed output of the input yᵤ. They are fully connected to the nodes in the hidden layer.
+The corrupted input r_corr of CDAE is drawn from a conditional Gaussian distribution p(r_corr | r). The reconstruction of r_corr is formulated as follows:
+
+
+Equation 9
+where W₁ is the weight matrix corresponding to the encoder (going from the input layer to the hidden layer), W₂ is the weight matrix corresponding to the decoder (going from the hidden layer to the output layer). Vᵤ is the weight matrix for the red user node, while both b₁ and b₂ are the bias vectors.
+
+3.2 — Loss Function
+The parameters of CDAE are learned by minimizing the average reconstruction error as follows:
+
+
+Equation 10
+The loss function L(r_corr, h(r_corr)) in the equation above can be square loss or logistic loss. CDAE uses the square L2 norm to control the model complexity. It also (1) applies stochastic gradient descent to learn the model’s parameters and (2) adopts AdaGrad to automatically adapt the training step size during the learning procedure.
+
+The authors also propose a negative sampling technique to extract a small subset from items that user did not interact with for reducing the time complexity substantially without degrading the ranking quality. At inference time, CDAE takes a user’s existing preference set (without corruption) as input and recommends the items with the largest prediction values on the output layer to that user.
+
+The PyTorch code of the CDAE architecture class is given below for illustration purpose:
+
+
+For my PyTorch implementation, I used a CDAE architecture with a hidden layer of 50 units. I trained the model using stochastic gradient descent with a learning rate of 0.01, a batch size of 512, and a corruption ratio of 0.5.
+
+4 — Multinomial Variational Auto-encoder
+One of the most influential papers in this discussion is “Variational Autoencoders for Collaborative Filtering” by Dawen Liang, Rahul Krishnan, Matthew Hoffman, and Tony Jebara from Netflix. It proposes a variant of VAE for recommendation with implicit data. In particular, the authors introduced a principled Bayesian inference approach to estimate model parameters and show favorable results than commonly used likelihood functions.
+
+The paper uses U to index all users and I to index all items. The user-by-item interaction matrix is called X (with dimension U x I). The lower case xᵤ is a bag-of-words vector with the number of clicks for each item from user u. For implicit feedback, this matrix is binarized to have only 0s and 1s.
+
+4.1 — Model
+
+Equation 11
+The generative process of the model is seen in equation 11 and broken down as follows:
+
+For each user u, the model samples a K-dimensional latent representation zᵤ from a standard Gaussian prior.
+Then it transforms zᵤ via a non-linear function f_θ to produce a probability distribution over I items π(zᵤ).
+f_θ is a multi-layer perceptron with parameters θ and a softmax activation function.
+Given the total number of clicks from user u, the bag-of-words vector xᵤ is sampled from a multinomial distribution with probability π(zᵤ).
+The log-likelihood for user u (conditioned on the latent representation) is:
+
+
+Equation 12
+The authors believe that the multinomial distribution is suitable for this collaborative filtering problem. Specifically, the likelihood of the interaction matrix in equation 11 rewards the model for putting probability mass on the non-zero entries in xᵤ. However, considering that π(zᵤ) must sum to 1, the items must compete for a limited budget of probability mass. Therefore, the model should instead assign more probability mass to items that are more likely to be clicked, making it suitable to achieve a solid performance in the top-N ranking evaluation metric of recommendation systems.
+
+4.2 — Variational Inference
+In order to train the generative model in equation 11, the authors estimate θ by approximating the intractable posterior distribution p(zᵤ | xᵤ) via variational inference. This method approximates the true intractable posterior with a simpler variational distribution q(zᵤ) — which is a fully diagonal Gaussian distribution. The objective of variational inference is to optimize the free variational parameters {μᵤ, σᵤ²} so that the Kullback-Leiber divergence KL(q(zᵤ) || p(zᵤ | xᵤ)) is minimized.
+
+The issue with variational inference is that the number of parameters to optimize {μᵤ, σᵤ²} grows with the number of users and items in the dataset. VAE helps solve this issue by replacing the individual variational parameters with a data-dependent function:
+
+
+Equation 13
+This function is parameterized by ϕ — in which both μ_{ϕ} (xᵤ) and σ_{ϕ} (xᵤ) are vectors with K dimensions. The variational distribution is then set as follows:
+
+
+Equation 14
+Using the input xᵤ, the inference model returns the corresponding variational parameters of variational distribution q_{ϕ} (zᵤ|xᵤ). When being optimized, this variational distribution approximates the intractable posterior p_{ϕ} (zᵤ | xᵤ).
+
+
+Variational Gradient (https://matsen.fredhutch.org/general/2019/08/24/vbpi.html)
+To learn latent-variable models with variational inference, the standard approach is to lower-bound the log marginal likelihood of the data. The objective function to maximize for user u now becomes:
+
+
+Equation 15
+Another term to call this objective is evidence lower bound (ELBO). Intuitively, we should be able to obtain an estimate of ELBO by sampling zᵤ ∼ q_ϕ and optimizing it with a stochastic gradient ascent. However, we cannot differentiate ELBO to get the gradients with respect to ϕ. The reparametrization trick comes in handy here:
+
+
+Equation 16
+Essentially, we isolate the stochasticity in the sampling process, and thus the gradient with respect to ϕ can be back-propagated through the sampled zᵤ.
+
+From a different perspective, the first term of equation 15 can be interpreted as reconstruction error and the second term of equation 15 can be interpreted as regularization. The authors, therefore, extend equation 15 with an additional parameter β to control the strength of regularization:
+
+
+Equation 17
+This parameter β engages a tradeoff between how well the model fits the data and how close the approximate posterior stays to the prior during learning. The authors tune β via KL annealing, a common heuristic used for training VAEs when there is concern that the model is being under-utilized.
+
+4.3 — Prediction
+Given a user’s click history x, the model ranks all items based on the un-normalized predicted multinomial probability f_ϕ (z). The latent representation z for x is simply the mean of the variational distribution z = μ_ϕ (x).
+
+
+Dawen Liang et al. — Variational Autoencoders for Collaborative Filtering (https://arxiv.org/abs/1802.05814)
+Figure 2 from the paper provides a unified view of different variants of autoencoders.
+
+2a is the vanilla auto-encoder architecture, as seen in AutoRec and DeepRec.
+2b is the denoising auto-encoder architecture, as seen in CDAE. Here ϵ is a noise injected to the input layer.
+2c is the variational auto-encoder architecture under MultVAE, which uses an inference model parametrized by ϕ to produce the mean and variance of the approximating variational distribution, as explained in detail above.
+The PyTorch code of the MultVAE architecture class is given below for illustration purpose:
+
+
+For my PyTorch implementation, I keep the architecture for the generative model f and the inference model g symmetrical and use an MLP with 1 hidden layer. The dimension of the latent representation K is set to 200 and of other hidden layers is set to 600. The overall architecture for a MultVAE now becomes [I -> 600 -> 200 -> 600 -> I], where I is the total number of items. Other model details include tanH activation function, dropout rate with probability 0.5, Adam optimizer, batch size of 512, and learning rate of 0.01.
+
+5 — Sequential Variational Auto-encoder
+In “Sequential Variational Auto-encoders for Collaborative Filtering,” Noveen Sachdeva, Giuseppe Manco, Ettore Ritacco, and Vikram Pudi propose an extension of MultVAE by exploring the rich information present in the past preference history. They introduce a recurrent version of MultVAE, where instead of passing a subset of the whole history regardless of temporal dependencies, they pass the consumption sequence subset through a recurrent neural network. They show that handling temporal information is crucial for improving the accuracy of VAE.
+
+5.1 — Setting
+The problem setting is exactly similar to that of the MultVAE paper: U is a set of users, I is a set of items, and X is the user-item preference matrix with dimension U x I. The principal difference is that SVAE considers precedence and temporal relationships within the matrix X.
+
+X induces a natural ordering relationship between items: i <ᵤ j has the meaning that x_{u, i} > x_{u, j} in the rating matrix.
+They assume the existence of timing information T, where the term t_{u,i} represents the time when i was chosen by u. Then i <ᵤ j denotes that t_{u, i} > t_{u, j}.
+They also introduce a temporal mark in the elements of xᵤ: x_{u(t)} represents the t-th item in Iᵤ in the sorting induced by <ᵤ, whereas x_{u(1:t)} represents the sequence from x_{u(1)} to x_{u(t)}.
+
+Noveen Sachdeva et al. — Sequential Variational Autoencoders for Collaborative Filtering (https://arxiv.org/abs/1811.09975)
+5.2 — Model
+The figure above from the paper shows the architectural difference between MultVAE, SVAE, and another model called RVAE (which I won’t discuss here). Looking at the SVAE architecture, I can observe the recurrent relationship occurring in the layer upon which z_{u(t)} depends. The basic idea behind SVAE is that latent variable modeling should be able to express temporal dynamics and hence causalities and dependencies among preferences in a user’s history.
+
+Let’s review the math. Within this SVAE framework, the authors model temporal dependencies by conditioning each event to the previous events. Given a sequence x_{(1: T}, then its probability is:
+
+
+Equation 18
+This probability represents a recurrent relationship between x_{(t+1} and x_{(1:t)}. Thus, the model can handle each timestep separately.
+
+Recall the generative process in equation 11, we can add a timestamp t as seen below:
+
+
+Equation 19
+Equation 19 results in the joint likelihood:
+
+
+Equation 20
+The posterior likelihood in equation 20 can be approximated with a factorized proposal distribution:
+
+
+Equation 21
+where the right-term side is a Gaussian distribution whose parameters μ and σ depend upon the current history x_{u(1:t-1)}, by means of a recurrent layer h_t:
+
+
+Equation 22
+Finally, the loss function that SVAE optimized is:
+
+
+Equation 23
+5.3 — Prediction
+In this SVAE model, the proposal distribution introduces a dependency of the latent variable from a recurrent layer, which allows us to recover the information from the previous history. Given a user history x_{u(1:t-1)}, we can use equation 22 and set z = μ_{λ} (t), upon which we can devise the probability for the x_{u(t)} by means of π(z).
+
+The PyTorch code of the SVAE architecture class is given below for illustration purpose:
+
+
+Another unique property of this paper is the way the evaluation protocol works. The authors partitioned users into training, validation, and test set; and then trained the model using the full histories of the users in the training set. During the evaluation, for each user in the validation/test set, they split the time-sorted user history into two parts, fold-in and fold-out split.
+
+The fold-in split learns the necessary representations and recommends items.
+These items are then evaluated with the fold-out split of the user history using metrics such as Precision, Recall, and Normalized Discounted Cumulative Gain.
+For my PyTorch implementation, I follow the same code provided by the authors.
+
+The SVAE architecture includes an embedding layer of size 256, a recurrent layer (Gated Recurrent Unit) with 200 cells, and two encoding layers (of size 150 and 64) and finally two decoding layers (of size 64 and 150).
+The number K of latent factors for the VAE is set to be 64.
+The model is optimized with Adam and weight decay is set to be 0.01.
+6 — Embarrassingly Shallow Auto-encoders
+Harald Steck’s “Embarrassingly Shallow Autoencoders for Sparse Data” is a fascinating one that I want to bring into this discussion. The motivation here is that, according to his literature review, deep models with a large number of hidden layers typically do not obtain a notable improvement in ranking accuracy in collaborative filtering, compared to ‘deep’ models with only one, two, or three hidden layers. This is a stark contrast to other areas like NLP or computer vision.
+
+
+Harald Steck — Embarrassingly Shallow Autoencoders for Sparse Data (https://arxiv.org/abs/1905.03375)
+6.1 — Model
+Embarrassingly Shallow Auto-encoders (ESAE) is a linear model without a hidden layer. The (binary) input vector X vector indicates which items a user has interacted with, and ESAE’s objective is to predict the best items to recommend to that user in the output layer (as seen in the figure above). For implicit feedback, a value of 1 in X indicates that the user interacted with an item, while a value of 0 in X indicates that there is no observed interaction.
+
+The item-item weight matrix B represents the parameters of ESAE. Here, the self-similarity of an item in the input layer with itself in the output layer is omitted, so that ESAE can generalize effectively during the reconstruction step. Thus, the diagonal of this weight-matrix B is constrained to 0 (diag(B) = 0).
+
+For an item j and a user u, we want to predict S_{u, j}, where X_{u,.} refers to row u and B_{.,j} refers to column j:
+
+
+Equation 24
+6.2 — Objective Function
+With respect to diag(B) = 0, ESAE has the following convex objective for learning the weights B:
+
+
+Equation 25
+Here are important notes about this convex objective:
+
+||.|| denotes the Frobenius norm. This squared loss between the data X and the predicted scores XB allows for a closed-form solution.
+The hyper-parameter λ is the L2-norm regularization of the weights B.
+The constraint of a zero diagonal helps avoid the trivial solution B = I where I is the identity matrix.
+In the paper, Harald derived a closed-form solution from the training objective in equation 25. He argues that the traditional neighborhood-based collaborative filtering approaches are based on conceptually incorrect item-item similarity matrices, while the ESAE framework utilizes principled neighborhood models. I won’t go over the math derivation here, but you should take a look at section 3.1 from the paper for the detail.
+
+Notably, ESAE’s similarity matrix is based on the inverse of the given data matrix. As a result, the learned weights can also be negative and thus the model can learn the dissimilarities between items (besides the similarities). This proves to be essential to obtain good ranking accuracy. Furthermore, the data sparsity problem (there possibly is only a small amount of data available for each user) does not affect the uncertainty in estimating weight matrix B if the number of users in the data matrix X is sufficiently large.
+
+6.3 — Algorithm
+
+The Python code of the learning algorithm is given above. The training requires only the item-item matrix G = X^T * X as input, instead of the user-item matrix X. This is very efficient if the size of G is smaller than the size of X.
+
+For my PyTorch implementation, I set the L2-Norm regularization hyper-parameter λ to be 1000, the learning rate to be 0.01, and the batch size to be 512.
+
+Model Evaluation
+You can check out all six autoencoder-based recommendation models that I built at this repository: https://github.com/khanhnamle1994/transfer-rec/tree/master/Autoencoders-Experiments.
+
+The dataset is MovieLens 1M, similar to the two previous experiments that I have done using Matrix Factorization and Multilayer Perceptron. The goal is to predict the ratings that a user will give to a movie, in which the ratings are between 1 to 5.
+For the AutoRec and DeepRec models, the evaluation metric is Masked Root Mean Squared Error (RMSE) in a rating prediction (regression) setting.
+For the CDAE, MultVAE, SVAE, and ESAE models, the evaluation metrics are Precision, Recall, and Normalized Discounted Cumulative Gain (NDCG) in a ranking prediction (classification) setting. As explained in the sections above, these models work with implicit feedback data, where ratings are binarized into 0 (less than equal to 3) and 1 (bigger than 3).
+The results were captured in Comet ML. For those that are not familiar, it is a fantastic tool that keeps track of model experiments and logs all necessary metrics in a single dashboard.
+The result table is at the bottom of my repo’s README:
+
+
+Model Evaluation
+For rating prediction:
+
+AutoRec performs better than DeepRec: lower RMSE and shorter runtime.
+This is quite surprising, as DeepRec is a deeper architecture than AutoRec.
+For ranking prediction:
+
+The SVAE model clearly has the best result; however, it also takes an order of magnitude longer to train.
+Between the remaining three models: CDAE has the highest Precision@100, ESAE has the highest Recall@100 and NDCG@100, and MultVAE has the shortest runtime.
+Conclusion
+In this post, I have discussed the nuts and bolts of Auto-encoders and their use in collaborative filtering. I also walked through 6 different papers that use Auto-encoders for the recommendation framework: (1) AutoRec, (2) DeepRec, (3) Collaborative Denoising Auto-encoder, (4) Multinomial Variational Auto-encoder, (5) Sequential Variational Auto-encoder, and (6) Embarrassingly Shallow Auto-encoder.
+
+There are several emerging research directions that are happening in this area:
+
+When facing different recommendation requirements, it is important to incorporate auxiliary information to help understand users and items to further improve the performance of recommendation. The capacity of auto-encoders to process heterogeneous data sources brings great opportunities in recommending diverse items with unstructured data such as text, images, audio, and video features.
+Many effective unsupervised learning techniques based on auto-encoders have recently emerged: weighted auto-encoders, ladder variational auto-encoders, and discrete variational auto-encoders. Using these new auto-encoders variants will help improve the recommendation performance even further.
+Besides collaborative filtering, one can integrate the auto-encoders paradigm with content-based filtering and knowledge-based recommendation methods. These are largely under-explored areas that have the potential for progress.
+Stay tuned for future blog posts of this series that explore different modeling architectures that have been made for collaborative filtering.

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Recommended Products</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+      }
+
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .user-info {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.2em;
+        color: #555;
+      }
+
+      .subcategory {
+        margin-bottom: 40px;
+      }
+
+      .subcategory h2 {
+        color: #555;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .product {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px;
+        border: 1px solid #ddd;
+        padding: 10px;
+        background-color: #fff;
+        width: 180px;
+      }
+
+      .product img {
+        max-width: 150px;
+        max-height: 150px;
+        width: auto;
+        height: auto;
+        margin-bottom: 10px;
+      }
+
+      .product h3 {
+        text-align: center;
+        font-size: 1em;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Recommended Products</h1><div class="user-info"><p>User's body shape: {{ user_shape }}</p><p>User's gender: {{ user_gender }}</p></div>
+    {% for subcategory, items in products.items() %}
+    <div class="subcategory">
+      <h2>{{ subcategory }}</h2>
+      <div class="product-list">
+        {% for product in items %}
+        <div class="product">
+          <h3>{{ product.product_display_name }}</h3>
+          <img src="{{ product.product_image_link }}" alt="Product Image">
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </body>
+</html>

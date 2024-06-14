@@ -1,5 +1,3 @@
-
-
 Algorithms for Fashion Recommender Systems
 1. Content-Based Filtering:
     •	Description: This algorithm recommends items similar to those the user has shown interest in, based on item attributes (e.g., color, style, material).
