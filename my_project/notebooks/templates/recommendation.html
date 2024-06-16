@@ -64,7 +64,11 @@
     </style>
   </head>
   <body>
-    <h1>Recommended Products</h1><div class="user-info"><p>User's body shape: {{ user_shape }}</p><p>User's gender: {{ user_gender }}</p></div>
+    <h1>Recommended Products</h1><div class="user-info">
+      <p>User's body shape: {{ user_shape }}</p>
+      <p>User's gender: {{ user_gender }}</p>
+      <p>User's skin tone: {{ user_skin_tone }}</p>
+    </div>
     {% for subcategory, items in products.items() %}
     <div class="subcategory">
       <h2>{{ subcategory }}</h2>
