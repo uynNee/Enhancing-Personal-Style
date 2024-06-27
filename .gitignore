@@ -38,3 +38,7 @@ open with VScode.bat
 /.venv/Lib/site-packages/tzdata/zoneinfo/Indian/__pycache__
 /.venv/Lib/site-packages/tzdata/zoneinfo/Europe/__pycache__
 *.pyc
+*.pdf
+*.pkl
+*.pkl
+*.pkl

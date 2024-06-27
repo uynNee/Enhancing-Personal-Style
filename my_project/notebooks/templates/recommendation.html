@@ -21,11 +21,11 @@
         color: #555;
       }
 
-      .subcategory {
+      .articleType {
         margin-bottom: 40px;
       }
 
-      .subcategory h2 {
+      .articleType h2 {
         color: #555;
         text-align: center;
         margin-bottom: 20px;
@@ -69,9 +69,9 @@
       <p>User's gender: {{ user_gender }}</p>
       <p>User's skin tone: {{ user_skin_tone }}</p>
     </div>
-    {% for subcategory, items in products.items() %}
-    <div class="subcategory">
-      <h2>{{ subcategory }}</h2>
+    {% for articleType, items in products.items() %}
+    <div class="articleType">
+      <h2>{{ articleType }}</h2>
       <div class="product-list">
         {% for product in items %}
         <div class="product">
