@@ -2,11 +2,14 @@ import pickle
 import sqlite3
 import numpy as np
 import pandas as pd
-from flask import Flask, request, g, render_template
+from flask import Flask, request, g, render_template, session
 from flask import redirect
 from flask import url_for
+from sklearn.metrics.pairwise import cosine_similarity
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
+app.secret_key = 'DoMaiUyenNhiBCU'
 
 
 @app.before_request
@@ -112,6 +115,23 @@ def get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, reco
     return similar_items
 
 
+def collaborative_filtering(user_likes_df):
+    user_item_matrix = user_likes_df.pivot_table(index='user_id', columns='item_id', aggfunc='size', fill_value=0)
+
+    user_similarity = cosine_similarity(user_item_matrix)
+    user_similarity_df = pd.DataFrame(user_similarity, index=user_item_matrix.index, columns=user_item_matrix.index)
+
+    similar_users = user_similarity_df[session['user_id']].sort_values(ascending=False).index[1:]
+    similar_users_likes = user_item_matrix.loc[similar_users].sum(axis=0).sort_values(ascending=False)
+
+    liked_products = user_likes_df[user_likes_df['user_id'] == session['user_id']]['item_id'].tolist()
+    recommendations = similar_users_likes[~similar_users_likes.index.isin(liked_products)].head(5).index.tolist()
+
+    print(recommendations)
+
+    return recommendations
+
+
 @app.route('/recommend', methods=['GET'])
 def recommend():
     shape = request.args.get('shape')
@@ -119,25 +139,37 @@ def recommend():
     skin_tone = request.args.get('skin_tone')
     recommended_shape = articleType_mappings.get(shape, [])
     recommended_skin = skin_mappings.get(skin_tone, [])
+
     with open('clothing_knn.pkl', 'rb') as f:
         knn_model = pickle.load(f)
+
     query = "SELECT * FROM store_product"
     dataframe = pd.read_sql_query(query, g.db)
 
     top_n_items = get_top_n_items(dataframe, recommended_shape, recommended_skin, gender)
     similar_items = get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, recommended_skin, gender)
 
+    # Retrieve user likes from the database
+    user_likes_query = "SELECT user_id, item_id FROM user_likes"
+    user_likes = g.db.execute(user_likes_query).fetchall()
+    user_likes_df = pd.DataFrame(user_likes, columns=['user_id', 'item_id'])
+
+    # Apply collaborative filtering
+    cf_recommendations = collaborative_filtering(user_likes_df)
+
     final_recommendations = []
-    for item_id in similar_items:
+    for item_id in similar_items + cf_recommendations:
         product = dataframe[dataframe['id'] == item_id]
-        product_display_name = product['productDisplayName'].values[0]
-        product_image_link = product['link'].values[0]
-        product_subcategory = product['subCategory'].values[0]
-        product_base_color = product['baseColour'].values[0]
-        if product_base_color in recommended_skin:
-            final_recommendations.append({'product_display_name': product_display_name,
-                                          'product_image_link': product_image_link,
-                                          'subCategory': product_subcategory})
+        if not product.empty:
+            product_display_name = product['productDisplayName'].values[0]
+            product_image_link = product['link'].values[0]
+            product_subcategory = product['subCategory'].values[0]
+            product_base_color = product['baseColour'].values[0]
+            if product_base_color in recommended_skin:
+                final_recommendations.append({'id': item_id, 'product_display_name': product_display_name,
+                                              'product_image_link': product_image_link,
+                                              'subCategory': product_subcategory})
+
     grouped_recommendations = {}
     for product in final_recommendations:
         subcategory = product['subCategory']
@@ -147,6 +179,61 @@ def recommend():
 
     return render_template('recommendation.html', products=grouped_recommendations, user_shape=shape,
                            user_gender=gender, user_skin_tone=skin_tone)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        hashed_password = generate_password_hash(password, method='scrypt')
+
+        query = "INSERT INTO user (username, password) VALUES (?, ?)"
+        g.db.execute(query, (username, hashed_password))
+        g.db.commit()
+
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        query = "SELECT * FROM user WHERE username = ?"
+        user = g.db.execute(query, (username,)).fetchone()
+
+        if user and check_password_hash(user[2], password):
+            session['user_id'] = user[0]
+            session['username'] = user[1]
+            return redirect(url_for('index'))
+
+    return render_template('login.html')
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+
+@app.route('/like_product', methods=['POST'])
+def like_product():
+    product_id = request.form.get('product_id')
+    user_id = session.get('user_id')  # Assuming you store user_id in session after login
+
+    if not user_id:
+        return redirect(url_for('login'))
+
+    query = "INSERT INTO user_likes (user_id, item_id) VALUES (?, ?)"
+    g.db.execute(query, (user_id, product_id))
+    g.db.commit()
+
+    return redirect(request.referrer)
 
 
 if __name__ == '__main__':

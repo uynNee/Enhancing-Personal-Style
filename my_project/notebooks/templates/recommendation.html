@@ -63,24 +63,29 @@
       }
     </style>
   </head>
-  <body>
-    <h1>Recommended Products</h1><div class="user-info">
-      <p>User's body shape: {{ user_shape }}</p>
-      <p>User's gender: {{ user_gender }}</p>
-      <p>User's skin tone: {{ user_skin_tone }}</p>
-    </div>
-    {% for articleType, items in products.items() %}
-    <div class="articleType">
-      <h2>{{ articleType }}</h2>
-      <div class="product-list">
-        {% for product in items %}
-        <div class="product">
-          <h3>{{ product.product_display_name }}</h3>
-          <img src="{{ product.product_image_link }}" alt="Product Image">
-        </div>
-        {% endfor %}
+    <body>
+      <h1>Recommended Products</h1>
+      <div class="user-info">
+        <p>User's body shape: {{ user_shape }}</p>
+        <p>User's gender: {{ user_gender }}</p>
+        <p>User's skin tone: {{ user_skin_tone }}</p>
       </div>
-    </div>
-    {% endfor %}
-  </body>
+      {% for articleType, items in products.items() %}
+      <div class="articleType">
+        <h2>{{ articleType }}</h2>
+        <div class="product-list">
+          {% for product in items %}
+          <div class="product">
+            <h3>{{ product.product_display_name }}</h3>
+            <img src="{{ product.product_image_link }}" alt="Product Image">
+            <form method="POST" action="{{ url_for('like_product') }}">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <input type="submit" value="Like">
+            </form>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </body>
 </html>
