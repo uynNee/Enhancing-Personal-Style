@@ -224,7 +224,7 @@ def logout():
 @app.route('/like_product', methods=['POST'])
 def like_product():
     product_id = request.form.get('product_id')
-    user_id = session.get('user_id')  # Assuming you store user_id in session after login
+    user_id = session.get('user_id')
 
     if not user_id:
         return redirect(url_for('login'))

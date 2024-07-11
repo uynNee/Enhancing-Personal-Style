@@ -1,4 +1,3 @@
-
 open with VScode.bat
 /my_project/data/fashion products small/myntradataset/images
 /my_project/data/fashion products small/myntradataset/images
@@ -22,7 +21,6 @@ open with VScode.bat
 /.venv/Lib/site-packages/joblib/externals/cloudpickle/__pycache__
 /.venv/Lib/site-packages/joblib/test/__pycache__
 open with VScode.bat
-open with VScode.bat
 /my_project/data/fashion products small/myntradataset/images
 /my_project/data/fashion products small/images
 /.venv/Lib/site-packages/werkzeug/wrappers/__pycache__
@@ -40,4 +38,3 @@ open with VScode.bat
 *.pyc
 *.pdf
 *.pkl
-my_project/notebooks/clothing_knn.pkl
