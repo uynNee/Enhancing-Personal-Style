@@ -38,3 +38,4 @@ open with VScode.bat
 *.pyc
 *.pdf
 *.pkl
+my_project/notebooks/clothing_knn.pkl

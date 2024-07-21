@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import 'theme.css';
+
+body {
+  font-family: var(--mdc-typography--font-family), serif;
+  background-color: var(--mdc-theme-background);
+  color: var(--mdc-theme-on-surface);
+}
+/* index.css */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--mdc-typography--font-family);
+  background-color: var(--mdc-theme-background);
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: var(--mdc-theme-on-surface);
+}
+
+form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--mdc-theme-surface);
+  border-radius: var(--mdc-shape-medium);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: var(--mdc-theme-on-surface);
+}
+
+select, input[type="submit"], input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: var(--mdc-shape-small);
+}
+
+input[type="submit"] {
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-on-primary);
+  cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: #555;
+}
+
+.additional-fields {
+  display: none;
+}
+
+.auth-buttons {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.auth-buttons a {
+  margin: 0 10px;
+  padding: 10px 20px;
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-on-primary);
+  text-decoration: none;
+  border-radius: var(--mdc-shape-small);
+}
+
+.auth-buttons a:hover {
+  background-color: var(--mdc-theme-primary);
+}

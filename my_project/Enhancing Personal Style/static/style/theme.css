@@ -1,0 +1,15 @@
+:root {
+  --mdc-theme-primary: #a96278;
+  --mdc-theme-on-primary: #ffffff;
+  --mdc-theme-secondary: #273272;
+  --mdc-theme-on-secondary: #ffffff;
+  --mdc-theme-error: #b00020;
+  --mdc-theme-on-error: #ffffff;
+  --mdc-theme-surface: #ffffff;
+  --mdc-theme-on-surface: #090217;
+  --mdc-theme-background: #f1e8ea;
+  --mdc-shape-small: 14px;
+  --mdc-shape-medium: 7px;
+  --mdc-shape-large: 2px;
+  --mdc-typography--font-family: 'Roboto', Arial, sans-serif;
+}

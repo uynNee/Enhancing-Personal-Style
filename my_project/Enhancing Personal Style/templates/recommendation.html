@@ -1,94 +1,62 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Recommended Products</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-      }
-
-      h1 {
-        color: #333;
-        text-align: center;
-        margin-bottom: 40px;
-      }
-
-      .user-info {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 1.2em;
-        color: #555;
-      }
-
-      .articleType {
-        margin-bottom: 40px;
-      }
-
-      .articleType h2 {
-        color: #555;
-        text-align: center;
-        margin-bottom: 20px;
-      }
-
-      .product-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .product {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 10px;
-        border: 1px solid #ddd;
-        padding: 10px;
-        background-color: #fff;
-        width: 180px;
-      }
-
-      .product img {
-        max-width: 150px;
-        max-height: 150px;
-        width: auto;
-        height: auto;
-        margin-bottom: 10px;
-      }
-
-      .product h3 {
-        text-align: center;
-        font-size: 1em;
-        color: #333;
-      }
-    </style>
-  </head>
-    <body>
-      <h1>Recommended Products</h1>
-      <div class="user-info">
-        <p>User's body shape: {{ user_shape }}</p>
-        <p>User's gender: {{ user_gender }}</p>
-        <p>User's skin tone: {{ user_skin_tone }}</p>
-      </div>
-      {% for articleType, items in products.items() %}
-      <div class="articleType">
-        <h2>{{ articleType }}</h2>
-        <div class="product-list">
-          {% for product in items %}
-          <div class="product">
-            <h3>{{ product.product_display_name }}</h3>
-            <img src="{{ product.product_image_link }}" alt="Product Image">
-            <p>Rating: {{ product.rating }}/5</p>
-            <a href="{{ product.amazon_search_url }}" target="_blank">Search on Amazon</a>
-            <br>
-            <form method="POST" action="{{ url_for('user.like_product') }}">
-              <input type="hidden" name="product_id" value="{{ product.id }}">
-              <input type="submit" value="Like">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Recommendation System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/recommend.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='script/recommend.js') }}"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="{{ url_for('main.index') }}" class="home-icon"><i class="fas fa-home"></i></a>
+        <div class="search-bar">
+            <form action="/search" method="GET">
+                <input type="text" name="query" placeholder="Search products...">
+                <button type="submit"><i class="fas fa-search"></i></button>
             </form>
-          </div>
-          {% endfor %}
         </div>
-      </div>
-      {% endfor %}
-    </body>
+        <div class="dropdown">
+            <button class="dropbtn">Information</button>
+            <div class="dropdown-content">
+                <p>Body shape: {{ user_shape }}</p>
+                <p>Gender: {{ user_gender }}</p>
+                <p>Skin tone: {{ user_skin_tone }}</p>
+            </div>
+        </div>
+    </div>
+    <h1>Recommended Products</h1>
+    {% for articleType, items in products.items() %}
+        <div class="article-type">
+            <h2>{{ articleType }}</h2>
+            <div class="product-list">
+                {% for product in items %}
+                    <div class="product">
+                        {% if product.recommended_by == 'collaborative_filtering' %}
+                            <div class="cf-message">{{ product.liked_by_count }} user(s) also liked this</div>
+                        {% endif %}
+                        <h3>{{ product.product_display_name }}</h3>
+                        <img src="{{ product.product_image_link }}" alt="Product Image">
+                        <a href="{{ product.amazon_search_url }}" target="_blank">Search on Amazon</a>
+                        <br>
+                        <form method="POST" action="{{ url_for('user.like_product') }}" class="like-form" data-product-id="{{ product.id }}">
+                            {{ form.hidden_tag() }}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            {% if product.id in liked_products %}
+                                <button type="button" class="like-btn" title="You liked this item!">
+                                    <img src="{{ url_for('static', filename='assets/like/like.svg') }}" alt="Unlike">
+                                </button>
+                            {% else %}
+                                <button type="button" class="like-btn" title="You haven't liked this item!">
+                                    <img src="{{ url_for('static', filename='assets/like/unlike.svg') }}" alt="Like">
+                                </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</body>
 </html>

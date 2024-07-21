@@ -1,5 +1,6 @@
 import pickle
 import numpy as np
+# /utils/prediction.py
 
 
 def predict_body_shape(gender, chest, waist, high, hip):
@@ -11,6 +12,5 @@ def predict_body_shape(gender, chest, waist, high, hip):
     # Correctly format waist_hip_ratio as a 2D array before appending
     new_data = np.append(new_data, np.array([[waist_hip_ratio]]), axis=1)
     predicted_shape = pickle_model.predict(new_data)[0]
-    print(predicted_shape)
     predicted_shape = predicted_shape.strip('[]').strip("''")
     return predicted_shape
