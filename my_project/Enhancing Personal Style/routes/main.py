@@ -1,5 +1,5 @@
 import pandas as pd
-from flask import Blueprint, render_template, request, g, redirect, url_for
+from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
 from flask_wtf.csrf import generate_csrf
 
 from utils.prediction import predict_body_shape
@@ -41,3 +41,14 @@ def index():
             shape = predict_body_shape(gender, chest, waist, high, hip)
         return redirect(url_for('recommendations.recommend', shape=shape, gender=gender, skin_tone=skin_tone))
     return render_template('index.html', csrf_token=generate_csrf())
+
+@main_bp.route('/predict_shape', methods=['POST'])
+def predict_shape():
+    data = request.json
+    gender = data.get('gender')
+    chest = data.get('chest')
+    waist = data.get('waist')
+    high = data.get('high')
+    hip = data.get('hip')
+    predicted_shape = predict_body_shape(gender, chest, waist, high, hip)
+    return jsonify({'predicted_shape': predicted_shape})

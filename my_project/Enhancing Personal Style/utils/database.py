@@ -1,6 +1,5 @@
 import sqlite3
 from flask import g
-
 # /utils/database.py
 DATABASE = 'clothing_db.sqlite3'
 

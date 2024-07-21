@@ -4,6 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms.fields.simple import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 
+from utils.prediction import predict_body_shape
+
 # /routes/user.py
 user_bp = Blueprint('user', __name__)
 
@@ -99,6 +101,14 @@ def save_preferences():
     waist = request.form.get('Waist')
     high_hip = request.form.get('High')
     hip = request.form.get('Hip')
+
+    valid_shapes = ['Rectangle', 'Triangle', 'Inverted Triangle', 'Hourglass',
+                    'Top Hourglass', 'Bottom Hourglass', 'Spoon']
+    if body_shape not in valid_shapes:
+        if all([chest, waist, high_hip, hip]):
+            body_shape = predict_body_shape(gender, chest, waist, high_hip, hip)
+        else:
+            body_shape = None
 
     query_check = "SELECT * FROM user_preferences WHERE user_id = ?"
     existing_preferences = g.db.execute(query_check, (user_id,)).fetchone()

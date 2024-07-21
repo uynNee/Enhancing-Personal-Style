@@ -1,5 +1,4 @@
 import pandas as pd
-
 # /utils/content_based_filtering.py
 articleType_mappings = {
     'Rectangle': ['Skirts', 'Shorts', 'Trousers', 'Track Pants', 'Capris', 'Tracksuits', 'Tshirts', 'Shirts', 'Tops',
@@ -30,9 +29,14 @@ skin_mappings = {
 
 
 def get_top_n_items(dataframe, recommended_shape, recommended_skin, gender, n=5):
-    filtered_df = dataframe[(dataframe['baseColour'].isin(recommended_skin)) &
-                            (dataframe['articleType'].isin(recommended_shape)) &
-                            (dataframe['gender'] == gender)]
+    if gender == "Unisex":
+        filtered_df = dataframe[(dataframe['baseColour'].isin(recommended_skin)) &
+                                (dataframe['articleType'].isin(recommended_shape)) &
+                                (dataframe['gender'].isin(["Men", "Women"]))]
+    else:
+        filtered_df = dataframe[(dataframe['baseColour'].isin(recommended_skin)) &
+                                (dataframe['articleType'].isin(recommended_shape)) &
+                                (dataframe['gender'] == gender)]
     top_n_items = filtered_df.groupby('articleType').head(n)['id'].tolist()
     return top_n_items
 

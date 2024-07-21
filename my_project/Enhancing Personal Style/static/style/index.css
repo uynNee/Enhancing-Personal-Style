@@ -1,4 +1,4 @@
-/*/static/style/index.css*/
+/* /static/style/index.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import 'theme.css';
 
@@ -6,17 +6,11 @@ body {
   font-family: var(--mdc-typography--font-family), serif;
   background-color: var(--mdc-theme-background);
   color: var(--mdc-theme-on-surface);
+  padding: 20px;
 }
-/* index.css */
 
 * {
   box-sizing: border-box;
-}
-
-body {
-  font-family: var(--mdc-typography--font-family);
-  background-color: var(--mdc-theme-background);
-  padding: 20px;
 }
 
 h1 {
@@ -40,7 +34,7 @@ label {
   color: var(--mdc-theme-on-surface);
 }
 
-select, input[type="submit"], input[type="number"] {
+select, input[type="submit"], input[type="number"], button[type="button"] {
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
@@ -48,13 +42,13 @@ select, input[type="submit"], input[type="number"] {
   border-radius: var(--mdc-shape-small);
 }
 
-input[type="submit"] {
+input[type="submit"], button[type="button"] {
   background-color: var(--mdc-theme-primary);
   color: var(--mdc-theme-on-primary);
   cursor: pointer;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover, button[type="button"]:hover {
   background-color: #555;
 }
 
@@ -77,7 +71,7 @@ input[type="submit"]:hover {
 }
 
 .auth-buttons a:hover {
-  background-color: var(--mdc-theme-primary);
+  background-color: #555;
 }
 
 /* New CSS for the login message */
@@ -95,4 +89,57 @@ input[type="submit"]:hover {
 
 .login-message a:hover {
   text-decoration: underline;
+}
+
+.form-page {
+    display: none;
+}
+
+.form-page.active {
+    display: block;
+}
+
+.nav-buttons {
+    margin-top: 20px;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.radio-button {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    border: 2px solid var(--mdc-theme-primary);
+    background-color: var(--mdc-theme-on-primary);
+    color: var(--mdc-theme-on-surface);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.radio-button input[type="radio"] {
+    display: none;
+}
+
+.radio-button.selected {
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-surface);
+}
+
+button[type="button"] {
+  padding: 10px 20px;
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-on-primary);
+  border: none;
+  border-radius: var(--mdc-shape-small);
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button[type="button"]:hover {
+  background-color: #555;
 }
