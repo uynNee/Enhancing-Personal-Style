@@ -1,3 +1,4 @@
+<!--templates/recommendation.html-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,9 +38,13 @@
                             <div class="cf-message">{{ product.liked_by_count }} user(s) also liked this</div>
                         {% endif %}
                         <h3>{{ product.product_display_name }}</h3>
-                        <img src="{{ product.product_image_link }}" alt="Product Image">
-                        <a href="{{ product.amazon_search_url }}" target="_blank">Search on Amazon</a>
-                        <br>
+                        <img src="{{ product.product_image_link }}" alt="Product Image" class="product-image">
+                        <a href="{{ product.amazon_search_url }}" target="_blank" class="no-underline">
+                            <button type="submit" class="amazon-btn">
+                                <img src="{{ url_for('static', filename='assets/amazon/amazon.svg') }}" alt="Amazon Icon">
+                                Search for Product
+                            </button>
+                        </a>
                         <form method="POST" action="{{ url_for('user.like_product') }}" class="like-form" data-product-id="{{ product.id }}">
                             {{ form.hidden_tag() }}
                             <input type="hidden" name="product_id" value="{{ product.id }}">

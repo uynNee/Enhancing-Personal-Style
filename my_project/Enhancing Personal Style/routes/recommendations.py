@@ -1,4 +1,5 @@
 import pickle
+from collections import OrderedDict
 import pandas as pd
 from flask import Blueprint, render_template, request, g, session, redirect, url_for
 from flask_wtf import FlaskForm
@@ -64,9 +65,8 @@ def recommend():
             product_details = extract_product_details(product)
             if product_details['base_color'] in recommended_skin:
                 product_details['liked_by_count'] = user_likes_df[user_likes_df['item_id'] == item_id].shape[0]
-                keywords = [product_details['gender'], product_details['article_type'], product_details['base_color'],
-                            product_details['season'], product_details['usage']]
-                amazon_url = generate_search_urls(keywords)
+                product_name_for_search = product_details['product_display_name'].replace(" ", "+")
+                amazon_url = generate_search_urls([product_name_for_search])
                 product_details.update({
                     'amazon_search_url': amazon_url,
                     'recommended_by': 'content_based_filtering'
@@ -77,9 +77,8 @@ def recommend():
         if not product.empty:
             product_details = extract_product_details(product)
             product_details['liked_by_count'] = user_likes_df[user_likes_df['item_id'] == item_id].shape[0]
-            keywords = [product_details['gender'], product_details['article_type'], product_details['base_color'],
-                        product_details['season'], product_details['usage']]
-            amazon_url = generate_search_urls(keywords)
+            product_name_for_search = product_details['product_display_name'].replace(" ", "+")
+            amazon_url = generate_search_urls([product_name_for_search])
             product_details.update({
                 'amazon_search_url': amazon_url,
                 'recommended_by': 'collaborative_filtering'
@@ -107,10 +106,11 @@ def extract_product_details(product):
 
 
 def group_recommendations_by_subcategory(recommendations):
-    grouped_recommendations = {}
+    ordered_subcategories = ['Topwear', 'Bottomwear', 'Headwear', 'Dress']
+    grouped_recommendations = OrderedDict((subcategory, []) for subcategory in ordered_subcategories)
     for product in recommendations:
         subcategory = product['subCategory']
-        if subcategory not in grouped_recommendations:
-            grouped_recommendations[subcategory] = []
-        grouped_recommendations[subcategory].append(product)
-    return grouped_recommendations
+        if subcategory in grouped_recommendations:
+            grouped_recommendations[subcategory].append(product)
+
+    return {subcategory: products for subcategory, products in grouped_recommendations.items() if products}

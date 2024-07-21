@@ -1,3 +1,4 @@
+/*/static/style/recommend.css*/
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import 'theme.css';
 
@@ -14,7 +15,7 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: var(--mdc-theme-surface);
-  padding: 10px 25px;
+  padding: 10px 50px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -147,33 +148,62 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between; /* Ensure like button is at the bottom */
+  justify-content: space-between;
   margin: 10px;
   border: 1px solid #ddd;
   padding: 10px;
   background-color: var(--mdc-theme-surface);
   width: 180px;
-  height: 300px; /* Set a fixed height */
+  height: 325px;
   border-radius: var(--mdc-shape-small);
 }
 
 .product img {
-  max-width: 150px;
-  max-height: 150px;
+  max-width: 145px;
+  max-height: 145px;
   width: auto;
   height: auto;
+}
+
+.product-image {
+    padding: 5px 0;
 }
 
 .product h3 {
   text-align: center;
   font-size: 1em;
   color: var(--mdc-theme-on-surface);
-  margin: 10px 0; /* Add margin to separate text from image */
+  margin: 8px 0 8px 0;
 }
 
 .product .cf-message {
   color: #007bff;
   font-size: 0.9em;
+}
+
+.no-underline {
+    text-decoration: none; /* Removes the underline */
+}
+
+.amazon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-on-primary);
+  padding: 7px 15px;
+  border: none;
+  border-radius: var(--mdc-shape-small);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+  margin: 10px 0 5px 0;
+}
+
+.amazon-btn img {
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
 }
 
 .like-btn {

@@ -1,3 +1,4 @@
+/*/static/style/index.css*/
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import 'theme.css';
 
@@ -77,4 +78,21 @@ input[type="submit"]:hover {
 
 .auth-buttons a:hover {
   background-color: var(--mdc-theme-primary);
+}
+
+/* New CSS for the login message */
+.login-message {
+  text-align: center;
+  font-weight: bold;
+  color: var(--mdc-theme-on-surface);
+  margin: 20px 0;
+}
+
+.login-message a {
+  color: var(--mdc-theme-primary);
+  text-decoration: none;
+}
+
+.login-message a:hover {
+  text-decoration: underline;
 }

@@ -1,3 +1,4 @@
+<!--templates/index.html-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +20,6 @@
 </head>
 <body>
     <h1>Clothing Store Recommendation</h1>
-
     <div class="auth-buttons">
         {% if session.username %}
             <a href="{{ url_for('user.logout') }}">Logout</a>
@@ -28,43 +28,46 @@
             <a href="{{ url_for('user.register') }}">Register</a>
         {% endif %}
     </div>
-
-    <form method="POST" action="{{ url_for('user.save_preferences') }}">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-        <label for="shape">Body Shape:</label>
-        <select id="shape" name="shape" required onchange="toggleFields()">
-            <option value="Rectangle" {% if user_preferences and user_preferences.body_shape == 'Rectangle' %} selected {% endif %}>Rectangle</option>
-            <option value="Inverted Triangle" {% if user_preferences and user_preferences.body_shape == 'Inverted Triangle' %} selected {% endif %}>Inverted Triangle</option>
-            <option value="Top Hourglass" {% if user_preferences and user_preferences.body_shape == 'Top Hourglass' %} selected {% endif %}>Top Hourglass</option>
-            <option value="Triangle" {% if user_preferences and user_preferences.body_shape == 'Triangle' %} selected {% endif %}>Triangle</option>
-            <option value="Hourglass" {% if user_preferences and user_preferences.body_shape == 'Hourglass' %} selected {% endif %}>Hourglass</option>
-            <option value="Bottom Hourglass" {% if user_preferences and user_preferences.body_shape == 'Bottom Hourglass' %} selected {% endif %}>Bottom Hourglass</option>
-            <option value="Spoon" {% if user_preferences and user_preferences.body_shape == 'Spoon' %} selected {% endif %}>Spoon</option>
-            <option value="Predict" {% if user_preferences and user_preferences.body_shape == 'Predict' %} selected {% endif %}>Help me find my body shape</option>
-        </select>
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" required>
-            <option value="Men" {% if user_preferences and user_preferences.gender == 'Men' %} selected {% endif %}>Men</option>
-            <option value="Women" {% if user_preferences and user_preferences.gender == 'Women' %} selected {% endif %}>Women</option>
-        </select>
-        <label for="skin_tone">Skin Tone:</label>
-        <select id="skin_tone" name="skin_tone">
-            <option value="Spring" {% if user_preferences and user_preferences.skin_tone == 'Spring' %} selected {% endif %}>Spring</option>
-            <option value="Summer" {% if user_preferences and user_preferences.skin_tone == 'Summer' %} selected {% endif %}>Summer</option>
-            <option value="Autumn" {% if user_preferences and user_preferences.skin_tone == 'Autumn' %} selected {% endif %}>Autumn</option>
-            <option value="Winter" {% if user_preferences and user_preferences.skin_tone == 'Winter' %} selected {% endif %}>Winter</option>
-        </select>
-        <div id="additional-fields" class="additional-fields" style="display: none;">
-            <label for="Chest">Chest (in inches):</label>
-            <input type="number" id="Chest" name="Chest" step="1" {% if user_preferences %}value="{{ user_preferences.chest }}"{% endif %}>
-            <label for="Waist">Waist (in inches):</label>
-            <input type="number" id="Waist" name="Waist" step="1" {% if user_preferences %}value="{{ user_preferences.waist }}"{% endif %}>
-            <label for="High">High Hip (in inches):</label>
-            <input type="number" id="High" name="High" step="1" {% if user_preferences %}value="{{ user_preferences.high_hip }}"{% endif %}>
-            <label for="Hip">Hip (in inches):</label>
-            <input type="number" id="Hip" name="Hip" step="1" {% if user_preferences %}value="{{ user_preferences.hip }}"{% endif %}>
-        </div>
-        <input type="submit" value="Get Recommendations">
-    </form>
+    {% if session.username %}
+        <form method="POST" action="{{ url_for('user.save_preferences') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <label for="shape">Body Shape:</label>
+            <select id="shape" name="shape" required onchange="toggleFields()">
+                <option value="Rectangle" {% if user_preferences and user_preferences.body_shape == 'Rectangle' %} selected {% endif %}>Rectangle</option>
+                <option value="Inverted Triangle" {% if user_preferences and user_preferences.body_shape == 'Inverted Triangle' %} selected {% endif %}>Inverted Triangle</option>
+                <option value="Top Hourglass" {% if user_preferences and user_preferences.body_shape == 'Top Hourglass' %} selected {% endif %}>Top Hourglass</option>
+                <option value="Triangle" {% if user_preferences and user_preferences.body_shape == 'Triangle' %} selected {% endif %}>Triangle</option>
+                <option value="Hourglass" {% if user_preferences and user_preferences.body_shape == 'Hourglass' %} selected {% endif %}>Hourglass</option>
+                <option value="Bottom Hourglass" {% if user_preferences and user_preferences.body_shape == 'Bottom Hourglass' %} selected {% endif %}>Bottom Hourglass</option>
+                <option value="Spoon" {% if user_preferences and user_preferences.body_shape == 'Spoon' %} selected {% endif %}>Spoon</option>
+                <option value="Predict" {% if user_preferences and user_preferences.body_shape == 'Predict' %} selected {% endif %}>Help me find my body shape</option>
+            </select>
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="Men" {% if user_preferences and user_preferences.gender == 'Men' %} selected {% endif %}>Men</option>
+                <option value="Women" {% if user_preferences and user_preferences.gender == 'Women' %} selected {% endif %}>Women</option>
+            </select>
+            <label for="skin_tone">Skin Tone:</label>
+            <select id="skin_tone" name="skin_tone">
+                <option value="Spring" {% if user_preferences and user_preferences.skin_tone == 'Spring' %} selected {% endif %}>Spring</option>
+                <option value="Summer" {% if user_preferences and user_preferences.skin_tone == 'Summer' %} selected {% endif %}>Summer</option>
+                <option value="Autumn" {% if user_preferences and user_preferences.skin_tone == 'Autumn' %} selected {% endif %}>Autumn</option>
+                <option value="Winter" {% if user_preferences and user_preferences.skin_tone == 'Winter' %} selected {% endif %}>Winter</option>
+            </select>
+            <div id="additional-fields" class="additional-fields" style="display: none;">
+                <label for="Chest">Chest (in inches):</label>
+                <input type="number" id="Chest" name="Chest" step="1" {% if user_preferences %}value="{{ user_preferences.chest }}"{% endif %}>
+                <label for="Waist">Waist (in inches):</label>
+                <input type="number" id="Waist" name="Waist" step="1" {% if user_preferences %}value="{{ user_preferences.waist }}"{% endif %}>
+                <label for="High">High Hip (in inches):</label>
+                <input type="number" id="High" name="High" step="1" {% if user_preferences %}value="{{ user_preferences.high_hip }}"{% endif %}>
+                <label for="Hip">Hip (in inches):</label>
+                <input type="number" id="Hip" name="Hip" step="1" {% if user_preferences %}value="{{ user_preferences.hip }}"{% endif %}>
+            </div>
+            <input type="submit" value="Get Recommendations">
+        </form>
+    {% else %}
+        <p class="login-message">Please <a href="{{ url_for('user.register') }}">register</a> or <a href="{{ url_for('user.login') }}">log in</a> to set your preferences and get clothing recommendations.</p>
+    {% endif %}
 </body>
 </html>
