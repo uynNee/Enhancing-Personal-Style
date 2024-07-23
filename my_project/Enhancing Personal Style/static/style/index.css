@@ -34,15 +34,22 @@ label {
   color: var(--mdc-theme-on-surface);
 }
 
-select, input[type="submit"], input[type="number"], button[type="button"] {
-  width: 100%;
+select, button[type="submit"], button[type="button"] {
+  width: 25%;
   padding: 10px;
-  margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: var(--mdc-shape-small);
 }
 
-input[type="submit"], button[type="button"] {
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: var(--mdc-shape-small);
+}
+
+button[type="submit"], button[type="button"] {
   background-color: var(--mdc-theme-primary);
   color: var(--mdc-theme-on-primary);
   cursor: pointer;
@@ -112,6 +119,7 @@ input[type="submit"]:hover, button[type="button"]:hover {
 .radio-button {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
     margin: 5px 0;
     border: 2px solid var(--mdc-theme-primary);
@@ -119,6 +127,7 @@ input[type="submit"]:hover, button[type="button"]:hover {
     color: var(--mdc-theme-on-surface);
     cursor: pointer;
     border-radius: 4px;
+    position: relative;
 }
 
 .radio-button input[type="radio"] {
@@ -128,6 +137,15 @@ input[type="submit"]:hover, button[type="button"]:hover {
 .radio-button.selected {
     background-color: var(--mdc-theme-primary);
     color: var(--mdc-theme-surface);
+}
+
+.radio-button .question-mark {
+    padding: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 20px;
+    display: inline-block;
+    margin: -15px;
 }
 
 button[type="button"] {
@@ -142,4 +160,45 @@ button[type="button"] {
 
 button[type="button"]:hover {
   background-color: #555;
+}
+
+button[type="button"].prev-button {
+  background-color: var(--mdc-theme-on-primary);
+  border: 2px solid var(--mdc-theme-primary);
+  color: var(--mdc-theme-primary);
+}
+
+button[type="button"].next-button {
+  background-color: var(--mdc-theme-primary);
+  color: var(--mdc-theme-on-primary);
+}
+
+button[type="button"].prev-button:hover,
+button[type="button"].next-button:hover {
+  background-color: #555;
+  color: var(--mdc-theme-on-primary);
+}
+
+.explanation-box {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 20px; /* Increased padding */
+    z-index: 10;
+    width: 300px; /* Increased width */
+    right: 20px;
+    font-size: 16px; /* Adjusted font size for content */
+}
+
+.explanation-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.required {
+    color: red;
+    font-weight: bold;
+    margin-left: 5px;
 }

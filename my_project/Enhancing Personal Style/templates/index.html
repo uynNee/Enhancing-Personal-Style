@@ -1,4 +1,4 @@
-<!--templates/index.html-->
+<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clothing Recommendation System</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/style/index.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='script/index.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='/script/index.js') }}"></script>
 </head>
 <body>
     <h1>Clothing Store Recommendation</h1>
@@ -21,114 +21,152 @@
     {% if session.username %}
         <form method="POST" action="{{ url_for('user.save_preferences') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <!-- Page 1 -->
             <div class="form-page active" id="page1">
-                <label>Would you like help finding your body shape?</label>
+                <label>Would you like help finding your body shape? <span class="required">*</span></label>
                 <div class="radio-group">
                     <label class="radio-button" onclick="showAdditionalFields(true)">
-                        <input type="radio" name="predict" value="yes">
+                        <input type="radio" name="predict" value="yes" required>
                         Yes
                     </label>
                     <label class="radio-button" onclick="showAdditionalFields(false)">
-                        <input type="radio" name="predict" value="no">
+                        <input type="radio" name="predict" value="no" required>
                         No
                     </label>
                 </div>
                 <div id="additional-fields" class="additional-fields" style="display: none;">
                     <label for="Chest">Chest (in inches):</label>
-                    <input type="number" id="Chest" name="Chest" step="1" {% if user_preferences %}value="{{ user_preferences.chest }}"{% endif %}>
+                    <input type="number" id="Chest" name="Chest" step="1" {% if user_preferences %}value="{{ user_preferences.chest }}"{% endif %} required>
                     <label for="Waist">Waist (in inches):</label>
-                    <input type="number" id="Waist" name="Waist" step="1" {% if user_preferences %}value="{{ user_preferences.waist }}"{% endif %}>
+                    <input type="number" id="Waist" name="Waist" step="1" {% if user_preferences %}value="{{ user_preferences.waist }}"{% endif %} required>
                     <label for="High">High Hip (in inches):</label>
-                    <input type="number" id="High" name="High" step="1" {% if user_preferences %}value="{{ user_preferences.high_hip }}"{% endif %}>
+                    <input type="number" id="High" name="High" step="1" {% if user_preferences %}value="{{ user_preferences.high_hip }}"{% endif %} required>
                     <label for="Hip">Hip (in inches):</label>
-                    <input type="number" id="Hip" name="Hip" step="1" {% if user_preferences %}value="{{ user_preferences.hip }}"{% endif %}>
+                    <input type="number" id="Hip" name="Hip" step="1" {% if user_preferences %}value="{{ user_preferences.hip }}"{% endif %} required>
                 </div>
                 <div id="shape-group" class="additional-fields" style="display: none;">
-                    <label for="shape">Body Shape:</label>
+                    <label for="shape">Body Shape: <span class="required">*</span></label>
                     <div class="radio-group">
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Rectangle" {% if user_preferences and user_preferences.body_shape == 'Rectangle' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Rectangle" {% if user_preferences and user_preferences.body_shape == 'Rectangle' %} checked {% endif %} required>
                             Rectangle
+                            <span class="question-mark" onclick="showExplanation(this, 'Rectangle')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Inverted Triangle" {% if user_preferences and user_preferences.body_shape == 'Inverted Triangle' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Inverted Triangle" {% if user_preferences and user_preferences.body_shape == 'Inverted Triangle' %} checked {% endif %} required>
                             Inverted Triangle
+                            <span class="question-mark" onclick="showExplanation(this, 'InvertedTriangle')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Top Hourglass" {% if user_preferences and user_preferences.body_shape == 'Top Hourglass' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Top Hourglass" {% if user_preferences and user_preferences.body_shape == 'Top Hourglass' %} checked {% endif %} required>
                             Top Hourglass
+                            <span class="question-mark" onclick="showExplanation(this, 'TopHourglass')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Triangle" {% if user_preferences and user_preferences.body_shape == 'Triangle' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Triangle" {% if user_preferences and user_preferences.body_shape == 'Triangle' %} checked {% endif %} required>
                             Triangle
+                            <span class="question-mark" onclick="showExplanation(this, 'Triangle')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Hourglass" {% if user_preferences and user_preferences.body_shape == 'Hourglass' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Hourglass" {% if user_preferences and user_preferences.body_shape == 'Hourglass' %} checked {% endif %} required>
                             Hourglass
+                            <span class="question-mark" onclick="showExplanation(this, 'Hourglass')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Bottom Hourglass" {% if user_preferences and user_preferences.body_shape == 'Bottom Hourglass' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Bottom Hourglass" {% if user_preferences and user_preferences.body_shape == 'Bottom Hourglass' %} checked {% endif %} required>
                             Bottom Hourglass
+                            <span class="question-mark" onclick="showExplanation(this, 'BottomHourglass')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Spoon" {% if user_preferences and user_preferences.body_shape == 'Spoon' %} checked {% endif %}>
+                            <input type="radio" name="shape" value="Spoon" {% if user_preferences and user_preferences.body_shape == 'Spoon' %} checked {% endif %} required>
                             Spoon
+                            <span class="question-mark" onclick="showExplanation(this, 'Spoon')">?</span>
                         </label>
                     </div>
                 </div>
                 <div class="nav-buttons">
-                    <button type="button" onclick="nextPage()">Next</button>
+                    <button type="button" class="next-button" onclick="nextPage()">Next</button>
                 </div>
             </div>
+            <!-- Page 2 -->
             <div class="form-page" id="page2">
-                <label for="gender">Gender:</label>
+                <label for="gender">Gender: <span class="required">*</span></label>
                 <div class="radio-group">
                     <label class="radio-button">
-                        <input type="radio" name="gender" value="Men" {% if user_preferences and user_preferences.gender == 'Men' %} checked {% endif %}>
+                        <input type="radio" name="gender" value="Men" {% if user_preferences and user_preferences.gender == 'Men' %} checked {% endif %} required>
                         Men
                     </label>
                     <label class="radio-button">
-                        <input type="radio" name="gender" value="Women" {% if user_preferences and user_preferences.gender == 'Women' %} checked {% endif %}>
+                        <input type="radio" name="gender" value="Women" {% if user_preferences and user_preferences.gender == 'Women' %} checked {% endif %} required>
                         Women
                     </label>
                     <label class="radio-button">
-                        <input type="radio" name="gender" value="Unisex" {% if user_preferences and user_preferences.gender == 'Unisex' %} checked {% endif %}>
+                        <input type="radio" name="gender" value="Unisex" {% if user_preferences and user_preferences.gender == 'Unisex' %} checked {% endif %} required>
                         Unisex
                     </label>
                 </div>
                 <div class="nav-buttons">
-                    <button type="button" onclick="prevPage()">Previous</button>
-                    <button type="button" onclick="nextPage()">Next</button>
+                    <button type="button" class="prev-button" onclick="prevPage()">Previous</button>
+                    <button type="button" class="next-button" onclick="nextPage()">Next</button>
                 </div>
             </div>
+            <!-- Page 3 -->
             <div class="form-page" id="page3">
-                <label for="skin_tone">Skin Tone:</label>
+                <label for="skin_tone">Skin Tone: <span class="required">*</span></label>
                 <div class="radio-group">
                     <label class="radio-button">
-                        <input type="radio" name="skin_tone" value="Spring" {% if user_preferences and user_preferences.skin_tone == 'Spring' %} checked {% endif %}>
+                        <input type="radio" name="skin_tone" value="Spring" {% if user_preferences and user_preferences.skin_tone == 'Spring' %} checked {% endif %} required>
                         Spring
                     </label>
                     <label class="radio-button">
-                        <input type="radio" name="skin_tone" value="Summer" {% if user_preferences and user_preferences.skin_tone == 'Summer' %} checked {% endif %}>
+                        <input type="radio" name="skin_tone" value="Summer" {% if user_preferences and user_preferences.skin_tone == 'Summer' %} checked {% endif %} required>
                         Summer
                     </label>
                     <label class="radio-button">
-                        <input type="radio" name="skin_tone" value="Autumn" {% if user_preferences and user_preferences.skin_tone == 'Autumn' %} checked {% endif %}>
+                        <input type="radio" name="skin_tone" value="Autumn" {% if user_preferences and user_preferences.skin_tone == 'Autumn' %} checked {% endif %} required>
                         Autumn
                     </label>
                     <label class="radio-button">
-                        <input type="radio" name="skin_tone" value="Winter" {% if user_preferences and user_preferences.skin_tone == 'Winter' %} checked {% endif %}>
+                        <input type="radio" name="skin_tone" value="Winter" {% if user_preferences and user_preferences.skin_tone == 'Winter' %} checked {% endif %} required>
                         Winter
                     </label>
                 </div>
                 <div class="nav-buttons">
-                    <button type="button" onclick="prevPage()">Previous</button>
-                    <input type="submit" value="Get Recommendations">
+                    <button type="button" class="prev-button" onclick="prevPage()">Previous</button>
+                    <button type="submit">Submit</button>
                 </div>
             </div>
         </form>
     {% else %}
-        <p class="login-message">Please <a href="{{ url_for('user.register') }}">register</a> or <a href="{{ url_for('user.login') }}">log in</a> to set your preferences and get clothing recommendations.</p>
+        <p>Please log in to access the recommendation system.</p>
     {% endif %}
+    <div id="Rectangle-explanation" class="explanation-box">
+        <h3>Rectangle</h3>
+        <p>Your shoulder, bust, waist, and hip measurements are fairly uniform.</p>
+    </div>
+    <div id="InvertedTriangle-explanation" class="explanation-box">
+        <h3>Inverted Triangle</h3>
+        <p>Your shoulders are broader than your hips.</p>
+    </div>
+    <div id="TopHourglass-explanation" class="explanation-box">
+        <h3>Top Hourglass</h3>
+        <p>You have a well-defined waist with bust measurements slightly larger than your hips.</p>
+    </div>
+    <div id="Triangle-explanation" class="explanation-box">
+        <h3>Triangle</h3>
+        <p>Your hips are wider than your shoulders and bust.</p>
+    </div>
+    <div id="Hourglass-explanation" class="explanation-box">
+        <h3>Hourglass</h3>
+        <p>You have a well-defined waist with bust and hip measurements in proportion.</p>
+    </div>
+    <div id="BottomHourglass-explanation" class="explanation-box">
+        <h3>Bottom Hourglass</h3>
+        <p>Your hips are slightly larger than your bust with a well-defined waist.</p>
+    </div>
+    <div id="Spoon-explanation" class="explanation-box">
+        <h3>Spoon</h3>
+        <p>Your hips are larger than your bust and you have a well-defined waist.</p>
+    </div>
 </body>
 </html>
