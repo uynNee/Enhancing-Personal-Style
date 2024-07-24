@@ -93,17 +93,29 @@ def save_preferences():
     user_id = session.get('user_id')
     if not user_id:
         return redirect(url_for('user.login'))
+    save_user_preferences(user_id, request.form)
+    return redirect(url_for('recommendations.recommend'))
 
-    body_shape = request.form.get('shape')
-    gender = request.form.get('gender')
-    skin_tone = request.form.get('skin_tone')
-    chest = request.form.get('Chest')
-    waist = request.form.get('Waist')
-    high_hip = request.form.get('High')
-    hip = request.form.get('Hip')
 
-    valid_shapes = ['Rectangle', 'Triangle', 'Inverted Triangle', 'Hourglass',
-                    'Top Hourglass', 'Bottom Hourglass', 'Spoon']
+@user_bp.route('/test_save_preferences', methods=['POST'])
+def test_save_preferences():
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('user.login'))
+    save_user_preferences(user_id, request.form)
+    return redirect(url_for('recommendations.test_recommend'))
+
+
+def save_user_preferences(user_id, request_form):
+    body_shape = request_form.get('shape')
+    gender = request_form.get('gender')
+    skin_tone = request_form.get('skin_tone')
+    chest = request_form.get('Chest')
+    waist = request_form.get('Waist')
+    high_hip = request_form.get('High')
+    hip = request_form.get('Hip')
+
+    valid_shapes = ['Rectangle', 'Triangle', 'Inverted Triangle', 'Hourglass', 'Top Hourglass', 'Bottom Hourglass', 'Spoon']
     if body_shape not in valid_shapes:
         if all([chest, waist, high_hip, hip]):
             body_shape = predict_body_shape(gender, chest, waist, high_hip, hip)
@@ -126,6 +138,4 @@ def save_preferences():
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """
         g.db.execute(query_insert, (user_id, body_shape, gender, skin_tone, chest, waist, high_hip, hip))
-
     g.db.commit()
-    return redirect(url_for('recommendations.recommend'))

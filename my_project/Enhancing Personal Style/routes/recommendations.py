@@ -22,13 +22,52 @@ class LikeForm(FlaskForm):
 def recommend():
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
-
     user_id = session.get('user_id')
+    grouped_recommendations, liked_products, shape, gender, skin_tone = get_recommendations(user_id)
+    form = LikeForm()
+    return render_template('recommendation.html', products=grouped_recommendations, user_shape=shape,
+                           user_gender=gender, user_skin_tone=skin_tone, liked_products=liked_products, form=form)
 
-    # Load user preferences
+
+@recommendations_bp.route('/test_recommend', methods=['GET'])
+def test_recommend():
+    if 'user_id' not in session:
+        return redirect(url_for('user.login'))
+    user_id = session.get('user_id')
+    grouped_recommendations, liked_products, shape, gender, skin_tone = get_recommendations(user_id)
+    form = LikeForm()
+    return render_template('user_testing_recommendation.html', products=grouped_recommendations, user_shape=shape,
+                           user_gender=gender, user_skin_tone=skin_tone, liked_products=liked_products, form=form)
+
+
+def extract_product_details(product):
+    return {
+        'id': product['id'].values[0],
+        'product_display_name': product['productDisplayName'].values[0],
+        'product_image_link': product['link'].values[0],
+        'subCategory': product['subCategory'].values[0],
+        'gender': product['gender'].values[0],
+        'article_type': product['articleType'].values[0],
+        'base_color': product['baseColour'].values[0],
+        'season': product['season'].values[0],
+        'usage': product['usage'].values[0],
+    }
+
+
+def group_recommendations_by_subcategory(recommendations):
+    ordered_subcategories = ['Topwear', 'Bottomwear', 'Headwear', 'Dress']
+    grouped_recommendations = OrderedDict((subcategory, []) for subcategory in ordered_subcategories)
+    for product in recommendations:
+        subcategory = product['subCategory']
+        if subcategory in grouped_recommendations:
+            grouped_recommendations[subcategory].append(product)
+
+    return {subcategory: products for subcategory, products in grouped_recommendations.items() if products}
+
+
+def get_recommendations(user_id):
     query_preferences = "SELECT body_shape, gender, skin_tone FROM user_preferences WHERE user_id = ?"
     user_preferences = g.db.execute(query_preferences, (user_id,)).fetchone()
-
     if user_preferences:
         shape = user_preferences[0]  # body_shape
         gender = user_preferences[1]  # gender
@@ -37,7 +76,6 @@ def recommend():
         shape = request.args.get('shape')
         gender = request.args.get('gender')
         skin_tone = request.args.get('skin_tone')
-
     recommended_shape = articleType_mappings.get(shape, [])
     recommended_skin = skin_mappings.get(skin_tone, [])
     with open('clothing_knn.pkl', 'rb') as f:
@@ -45,18 +83,13 @@ def recommend():
     query = "SELECT * FROM store_product"
     dataframe = pd.read_sql_query(query, g.db)
     top_n_items = get_top_n_items(dataframe, recommended_shape, recommended_skin, gender)
-    cbf_recommendations = get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, recommended_skin,
-                                            gender)
-
-    # Get likes for the current user
+    cbf_recommendations = get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, recommended_skin, gender)
     user_likes_query = "SELECT item_id FROM user_likes WHERE user_id = ?"
     user_likes = g.db.execute(user_likes_query, (user_id,)).fetchall()
     liked_products = [item[0] for item in user_likes]
-
     user_likes_query_all = "SELECT user_id, item_id FROM user_likes"
     user_likes_all = g.db.execute(user_likes_query_all).fetchall()
     user_likes_df = pd.DataFrame(user_likes_all, columns=['user_id', 'item_id'])
-
     cf_recommendations = collaborative_filtering(user_likes_df)
     final_recommendations = []
     for item_id in cbf_recommendations:
@@ -84,33 +117,4 @@ def recommend():
                 'recommended_by': 'collaborative_filtering'
             })
             final_recommendations.append(product_details)
-    grouped_recommendations = group_recommendations_by_subcategory(final_recommendations)
-
-    form = LikeForm()
-    return render_template('recommendation.html', products=grouped_recommendations, user_shape=shape,
-                           user_gender=gender, user_skin_tone=skin_tone, liked_products=liked_products, form=form)
-
-
-def extract_product_details(product):
-    return {
-        'id': product['id'].values[0],
-        'product_display_name': product['productDisplayName'].values[0],
-        'product_image_link': product['link'].values[0],
-        'subCategory': product['subCategory'].values[0],
-        'gender': product['gender'].values[0],
-        'article_type': product['articleType'].values[0],
-        'base_color': product['baseColour'].values[0],
-        'season': product['season'].values[0],
-        'usage': product['usage'].values[0],
-    }
-
-
-def group_recommendations_by_subcategory(recommendations):
-    ordered_subcategories = ['Topwear', 'Bottomwear', 'Headwear', 'Dress']
-    grouped_recommendations = OrderedDict((subcategory, []) for subcategory in ordered_subcategories)
-    for product in recommendations:
-        subcategory = product['subCategory']
-        if subcategory in grouped_recommendations:
-            grouped_recommendations[subcategory].append(product)
-
-    return {subcategory: products for subcategory, products in grouped_recommendations.items() if products}
+    return group_recommendations_by_subcategory(final_recommendations), liked_products, shape, gender, skin_tone

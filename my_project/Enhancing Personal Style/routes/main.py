@@ -1,10 +1,10 @@
+# routes/main.py
 import pandas as pd
 from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
 from flask_wtf.csrf import generate_csrf
 from utils.prediction import predict_body_shape
 from utils.database import get_db, close_db
 
-# /routes/main.py
 main_bp = Blueprint('main', __name__)
 
 
@@ -29,17 +29,10 @@ def view_database():
 @main_bp.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        shape = request.form.get('shape')
-        gender = request.form.get('gender')
-        skin_tone = request.form.get('skin_tone')
-        if shape == "Predict":
-            chest = float(request.form.get('Chest'))
-            waist = float(request.form.get('Waist'))
-            high = float(request.form.get('High'))
-            hip = float(request.form.get('Hip'))
-            shape = predict_body_shape(gender, chest, waist, high, hip)
+        shape, gender, skin_tone = handle_form_request(request.form)
         return redirect(url_for('recommendations.recommend', shape=shape, gender=gender, skin_tone=skin_tone))
     return render_template('index.html', csrf_token=generate_csrf())
+
 
 @main_bp.route('/predict_shape', methods=['POST'])
 def predict_shape():
@@ -51,3 +44,16 @@ def predict_shape():
     hip = data.get('hip')
     predicted_shape = predict_body_shape(gender, chest, waist, high, hip)
     return jsonify({'predicted_shape': predicted_shape})
+
+
+def handle_form_request(request_form):
+    shape = request_form.get('shape')
+    gender = request_form.get('gender')
+    skin_tone = request_form.get('skin_tone')
+    if shape == "Predict":
+        chest = float(request_form.get('Chest'))
+        waist = float(request_form.get('Waist'))
+        high = float(request_form.get('High'))
+        hip = float(request_form.get('Hip'))
+        shape = predict_body_shape(gender, chest, waist, high, hip)
+    return shape, gender, skin_tone

@@ -2,100 +2,100 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import 'theme.css';
 
-body {
-  font-family: var(--mdc-typography--font-family), serif;
-  background-color: var(--mdc-theme-background);
-  color: var(--mdc-theme-on-surface);
-  padding: 20px;
+* {
+    box-sizing: border-box;
+    /*padding: 0;*/
+    /*margin: 0;*/
 }
 
-* {
-  box-sizing: border-box;
+body {
+    font-family: var(--mdc-typography--font-family), serif;
+    background-color: var(--mdc-theme-background);
+    color: var(--mdc-theme-on-surface);
 }
 
 h1 {
-  text-align: center;
-  color: var(--mdc-theme-on-surface);
+    text-align: center;
+    color: var(--mdc-theme-on-surface);
 }
 
 form {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: var(--mdc-theme-surface);
-  border-radius: var(--mdc-shape-medium);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--mdc-theme-surface);
+    border-radius: var(--mdc-shape-medium);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 label {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-  color: var(--mdc-theme-on-surface);
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: var(--mdc-theme-on-surface);
 }
 
 select, button[type="submit"], button[type="button"] {
-  width: 25%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: var(--mdc-shape-small);
+    width: 25%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--mdc-shape-small);
 }
 
 input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: var(--mdc-shape-small);
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--mdc-shape-small);
 }
 
 button[type="submit"], button[type="button"] {
-  background-color: var(--mdc-theme-primary);
-  color: var(--mdc-theme-on-primary);
-  cursor: pointer;
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-on-primary);
+    cursor: pointer;
 }
 
 input[type="submit"]:hover, button[type="button"]:hover {
-  background-color: #555;
+    background-color: #555;
 }
 
 .additional-fields {
-  display: none;
+    display: none;
 }
 
 .auth-buttons {
-  text-align: center;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .auth-buttons a {
-  margin: 0 10px;
-  padding: 10px 20px;
-  background-color: var(--mdc-theme-primary);
-  color: var(--mdc-theme-on-primary);
-  text-decoration: none;
-  border-radius: var(--mdc-shape-small);
+    margin: 0 10px;
+    padding: 10px 20px;
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-on-primary);
+    text-decoration: none;
+    border-radius: var(--mdc-shape-small);
 }
 
 .auth-buttons a:hover {
-  background-color: #555;
+    background-color: #555;
 }
 
-/* New CSS for the login message */
 .login-message {
-  text-align: center;
-  font-weight: bold;
-  color: var(--mdc-theme-on-surface);
-  margin: 20px 0;
+    text-align: center;
+    font-weight: bold;
+    color: var(--mdc-theme-on-surface);
+    margin: 20px 0;
 }
 
 .login-message a {
-  color: var(--mdc-theme-primary);
-  text-decoration: none;
+    color: var(--mdc-theme-primary);
+    text-decoration: none;
 }
 
 .login-message a:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .form-page {
@@ -114,6 +114,14 @@ input[type="submit"]:hover, button[type="button"]:hover {
     display: flex;
     flex-direction: column;
     margin: 10px 0;
+}
+
+.man-image {
+    max-width: 200px;
+}
+
+.woman-image {
+    max-width: 200px;
 }
 
 .radio-button {
@@ -149,34 +157,34 @@ input[type="submit"]:hover, button[type="button"]:hover {
 }
 
 button[type="button"] {
-  padding: 10px 20px;
-  background-color: var(--mdc-theme-primary);
-  color: var(--mdc-theme-on-primary);
-  border: none;
-  border-radius: var(--mdc-shape-small);
-  cursor: pointer;
-  font-weight: bold;
+    padding: 10px 20px;
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-on-primary);
+    border: none;
+    border-radius: var(--mdc-shape-small);
+    cursor: pointer;
+    font-weight: bold;
 }
 
 button[type="button"]:hover {
-  background-color: #555;
+    background-color: #555;
 }
 
 button[type="button"].prev-button {
-  background-color: var(--mdc-theme-on-primary);
-  border: 2px solid var(--mdc-theme-primary);
-  color: var(--mdc-theme-primary);
+    background-color: var(--mdc-theme-on-primary);
+    border: 2px solid var(--mdc-theme-primary);
+    color: var(--mdc-theme-primary);
 }
 
 button[type="button"].next-button {
-  background-color: var(--mdc-theme-primary);
-  color: var(--mdc-theme-on-primary);
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-on-primary);
 }
 
 button[type="button"].prev-button:hover,
 button[type="button"].next-button:hover {
-  background-color: #555;
-  color: var(--mdc-theme-on-primary);
+    background-color: #555;
+    color: var(--mdc-theme-on-primary);
 }
 
 .explanation-box {
@@ -184,11 +192,11 @@ button[type="button"].next-button:hover {
     position: absolute;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
-    padding: 20px; /* Increased padding */
+    padding: 0 20px;
     z-index: 10;
-    width: 300px; /* Increased width */
-    right: 20px;
-    font-size: 16px; /* Adjusted font size for content */
+    max-width: 500px;
+    right: 15px;
+    font-size: 16px;
 }
 
 .explanation-container {
@@ -201,4 +209,16 @@ button[type="button"].next-button:hover {
     color: red;
     font-weight: bold;
     margin-left: 5px;
+}
+
+.color-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.color-box {
+    width: 20%;
+    padding-bottom: 20%;
+    margin: 10px 0;
 }

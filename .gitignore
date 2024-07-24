@@ -39,3 +39,4 @@ open with VScode.bat
 *.pdf
 *.pkl
 my_project/notebooks/clothing_knn.pkl
+my_project/Enhancing Personal Style/static/assets/body_silhouette/measurement.png

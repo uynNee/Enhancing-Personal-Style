@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clothing Recommendation System</title>
+    <title>Enhancing Personal Style</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/style/index.css') }}">
     <script type="text/javascript" src="{{ url_for('static', filename='/script/index.js') }}"></script>
 </head>
 <body>
-    <h1>Clothing Store Recommendation</h1>
+    <h1>Enhancing Personal Style</h1>
     <div class="auth-buttons">
         {% if session.username %}
             <a href="{{ url_for('user.logout') }}">Logout</a>
@@ -23,29 +23,30 @@
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <!-- Page 1 -->
             <div class="form-page active" id="page1">
-                <label>Would you like help finding your body shape? <span class="required">*</span></label>
+                <label>Would you like assistance identifying your body shape? <span class="required">*</span></label>
                 <div class="radio-group">
-                    <label class="radio-button" onclick="showAdditionalFields(true)">
+                    <label class="radio-button" onclick="showAdditionalFields(true); showExplanation(this, 'Measurement')">
                         <input type="radio" name="predict" value="yes" required>
                         Yes
                     </label>
-                    <label class="radio-button" onclick="showAdditionalFields(false)">
+                    <label class="radio-button" onclick="showAdditionalFields(false); closeExplanationBoxes()">
                         <input type="radio" name="predict" value="no" required>
                         No
                     </label>
                 </div>
                 <div id="additional-fields" class="additional-fields" style="display: none;">
+                    <label>Please Input Your Measurements: <span class="required">*</span></label>
                     <label for="Chest">Chest (in inches):</label>
-                    <input type="number" id="Chest" name="Chest" step="1" {% if user_preferences %}value="{{ user_preferences.chest }}"{% endif %} required>
+                    <input type="number" id="Chest" name="Chest" step="1" min="0" {% if user_preferences %}value="{{ user_preferences.chest }}"{% endif %} required>
                     <label for="Waist">Waist (in inches):</label>
-                    <input type="number" id="Waist" name="Waist" step="1" {% if user_preferences %}value="{{ user_preferences.waist }}"{% endif %} required>
+                    <input type="number" id="Waist" name="Waist" step="1" min="0" {% if user_preferences %}value="{{ user_preferences.waist }}"{% endif %} required>
                     <label for="High">High Hip (in inches):</label>
-                    <input type="number" id="High" name="High" step="1" {% if user_preferences %}value="{{ user_preferences.high_hip }}"{% endif %} required>
+                    <input type="number" id="High" name="High" step="1" min="0" {% if user_preferences %}value="{{ user_preferences.high_hip }}"{% endif %} required>
                     <label for="Hip">Hip (in inches):</label>
-                    <input type="number" id="Hip" name="Hip" step="1" {% if user_preferences %}value="{{ user_preferences.hip }}"{% endif %} required>
+                    <input type="number" id="Hip" name="Hip" step="1" min="0" {% if user_preferences %}value="{{ user_preferences.hip }}"{% endif %} required>
                 </div>
                 <div id="shape-group" class="additional-fields" style="display: none;">
-                    <label for="shape">Body Shape: <span class="required">*</span></label>
+                    <label for="shape">Please Select Your Body Shape: <span class="required">*</span></label>
                     <div class="radio-group">
                         <label class="radio-button">
                             <input type="radio" name="shape" value="Rectangle" {% if user_preferences and user_preferences.body_shape == 'Rectangle' %} checked {% endif %} required>
@@ -53,24 +54,24 @@
                             <span class="question-mark" onclick="showExplanation(this, 'Rectangle')">?</span>
                         </label>
                         <label class="radio-button">
-                            <input type="radio" name="shape" value="Inverted Triangle" {% if user_preferences and user_preferences.body_shape == 'Inverted Triangle' %} checked {% endif %} required>
-                            Inverted Triangle
-                            <span class="question-mark" onclick="showExplanation(this, 'InvertedTriangle')">?</span>
-                        </label>
-                        <label class="radio-button">
-                            <input type="radio" name="shape" value="Top Hourglass" {% if user_preferences and user_preferences.body_shape == 'Top Hourglass' %} checked {% endif %} required>
-                            Top Hourglass
-                            <span class="question-mark" onclick="showExplanation(this, 'TopHourglass')">?</span>
-                        </label>
-                        <label class="radio-button">
                             <input type="radio" name="shape" value="Triangle" {% if user_preferences and user_preferences.body_shape == 'Triangle' %} checked {% endif %} required>
                             Triangle
                             <span class="question-mark" onclick="showExplanation(this, 'Triangle')">?</span>
                         </label>
                         <label class="radio-button">
+                            <input type="radio" name="shape" value="Inverted Triangle" {% if user_preferences and user_preferences.body_shape == 'Inverted Triangle' %} checked {% endif %} required>
+                            Inverted Triangle
+                            <span class="question-mark" onclick="showExplanation(this, 'InvertedTriangle')">?</span>
+                        </label>
+                        <label class="radio-button">
                             <input type="radio" name="shape" value="Hourglass" {% if user_preferences and user_preferences.body_shape == 'Hourglass' %} checked {% endif %} required>
                             Hourglass
                             <span class="question-mark" onclick="showExplanation(this, 'Hourglass')">?</span>
+                        </label>
+                        <label class="radio-button">
+                            <input type="radio" name="shape" value="Top Hourglass" {% if user_preferences and user_preferences.body_shape == 'Top Hourglass' %} checked {% endif %} required>
+                            Top Hourglass
+                            <span class="question-mark" onclick="showExplanation(this, 'TopHourglass')">?</span>
                         </label>
                         <label class="radio-button">
                             <input type="radio" name="shape" value="Bottom Hourglass" {% if user_preferences and user_preferences.body_shape == 'Bottom Hourglass' %} checked {% endif %} required>
@@ -102,7 +103,7 @@
                     </label>
                     <label class="radio-button">
                         <input type="radio" name="gender" value="Unisex" {% if user_preferences and user_preferences.gender == 'Unisex' %} checked {% endif %} required>
-                        Unisex
+                        Unisex / Prefer not to say
                     </label>
                 </div>
                 <div class="nav-buttons">
@@ -117,18 +118,22 @@
                     <label class="radio-button">
                         <input type="radio" name="skin_tone" value="Spring" {% if user_preferences and user_preferences.skin_tone == 'Spring' %} checked {% endif %} required>
                         Spring
+                        <span class="question-mark" onclick="showSwatches(this, 'Spring')">?</span>
                     </label>
                     <label class="radio-button">
                         <input type="radio" name="skin_tone" value="Summer" {% if user_preferences and user_preferences.skin_tone == 'Summer' %} checked {% endif %} required>
                         Summer
+                        <span class="question-mark" onclick="showSwatches(this, 'Summer')">?</span>
                     </label>
                     <label class="radio-button">
                         <input type="radio" name="skin_tone" value="Autumn" {% if user_preferences and user_preferences.skin_tone == 'Autumn' %} checked {% endif %} required>
                         Autumn
+                        <span class="question-mark" onclick="showSwatches(this, 'Autumn')">?</span>
                     </label>
                     <label class="radio-button">
                         <input type="radio" name="skin_tone" value="Winter" {% if user_preferences and user_preferences.skin_tone == 'Winter' %} checked {% endif %} required>
                         Winter
+                        <span class="question-mark" onclick="showSwatches(this, 'Winter')">?</span>
                     </label>
                 </div>
                 <div class="nav-buttons">
@@ -138,35 +143,66 @@
             </div>
         </form>
     {% else %}
-        <p>Please log in to access the recommendation system.</p>
+        <p class="login-message">Please log in to access the recommendation system.</p>
     {% endif %}
     <div id="Rectangle-explanation" class="explanation-box">
         <h3>Rectangle</h3>
-        <p>Your shoulder, bust, waist, and hip measurements are fairly uniform.</p>
-    </div>
-    <div id="InvertedTriangle-explanation" class="explanation-box">
-        <h3>Inverted Triangle</h3>
-        <p>Your shoulders are broader than your hips.</p>
-    </div>
-    <div id="TopHourglass-explanation" class="explanation-box">
-        <h3>Top Hourglass</h3>
-        <p>You have a well-defined waist with bust measurements slightly larger than your hips.</p>
+        <p>The rectangular body shape is known for its straight, angular silhouette, with shoulders and hips that are nearly the same width.</p>
     </div>
     <div id="Triangle-explanation" class="explanation-box">
         <h3>Triangle</h3>
-        <p>Your hips are wider than your shoulders and bust.</p>
+        <p>This type of body is characterized by a narrow upper body and broad hips (generally wider than the shoulders). However, the waist is not clearly defined.</p>
+    </div>
+    <div id="InvertedTriangle-explanation" class="explanation-box">
+        <h3>Inverted Triangle</h3>
+        <p>The inverted triangle body shape features a broad shoulder and chest that are wider than the hips. It creates a V-shaped silhouette.</p>
     </div>
     <div id="Hourglass-explanation" class="explanation-box">
         <h3>Hourglass</h3>
-        <p>You have a well-defined waist with bust and hip measurements in proportion.</p>
+        <p>The hourglass body shape is perfect and well-proportioned. It is characterized by a slim waist, wide chest, and hips that match the size of the chest.</p>
+    </div>
+    <div id="TopHourglass-explanation" class="explanation-box">
+        <h3>Top Hourglass</h3>
+        <p>This body type resembles a regular hourglass with a defined waist. Your chest is more prominent than your hips.</p>
     </div>
     <div id="BottomHourglass-explanation" class="explanation-box">
         <h3>Bottom Hourglass</h3>
-        <p>Your hips are slightly larger than your bust with a well-defined waist.</p>
+        <p>The bottom hourglass shape is well-defined similar to the top hourglass. Your hips are slightly larger than your chest with a well-defined waist.</p>
     </div>
     <div id="Spoon-explanation" class="explanation-box">
         <h3>Spoon</h3>
-        <p>Your hips are larger than your bust and you have a well-defined waist.</p>
+        <p>A body with a spoon shape has a curvy figure in which your hips are larger than your chest. Your shoulders are narrower than your hips.</p>
+    </div>
+    <div id="Measurement-explanation" class="explanation-box">
+        <h3>How to Measure Your Body</h3>
+        <p><strong>Chest:</strong> Measure the chest by wrapping measuring tape loosely around the fullest part of the chest. Rounding to the nearest whole number is your chest measurement.</p>
+        <p><strong>Waist:</strong> To measure the waist, place the tape at the top of the hip bone with your belly button and wrap it around your waist. Don't hold your breath while measuring and note the figure on the tape measure after your exhalation.</p>
+        <p><strong>High Hip:</strong> Wrap the measuring tape below the hip bone and take measurements.</p>
+        <p><strong>Hip:</strong> Ensure the tape is straight, wrap it around the widest part of your buttock, and return it back to the starting point.</p>
+    </div>
+    <div id="Spring-swatches" class="explanation-box">
+        <div class="description">
+            <h3>Skin swatches for Skin Tone Spring</h3>
+            <p><strong>Description:</strong> Spring skin tones are characterized by their warm and bright appearance. Individuals with this skin tone usually have a yellow or golden undertone to their skin. The colors that complement Spring skin tones are often fresh, clear, and warm. These colors can make the skin appear more vibrant and youthful.</p>
+        </div>
+    </div>
+    <div id="Summer-swatches" class="explanation-box">
+        <div class="description">
+            <h3>Skin swatches for Skin Tone Summer</h3>
+            <p><strong>Description:</strong> Summer skin tones have a cool and light appearance, often with a bluish or pinkish undertone. The colors that suit Summer skin tones are generally soft, muted, and cool, creating a harmonious and calming effect.</p>
+        </div>
+    </div>
+    <div id="Autumn-swatches" class="explanation-box">
+        <div class="description">
+            <h3>Skin swatches for Skin Tone Autumn</h3>
+            <p><strong>Description:</strong> Autumn skin tones are warm and rich, with a golden or olive undertone. The colors that enhance Autumn skin tones are earthy and warm, providing a deep and harmonious look.</p>
+        </div>
+    </div>
+    <div id="Winter-swatches" class="explanation-box">
+        <div class="description">
+            <h3>Skin swatches for Skin Tone Winter</h3>
+            <p><strong>Description:</strong> Winter skin tones are cool and intense, with a bluish undertone. The colors that complement Winter skin tones are bold, high-contrast, and cool, creating a striking and dynamic look.</p>
+        </div>
     </div>
 </body>
 </html>
