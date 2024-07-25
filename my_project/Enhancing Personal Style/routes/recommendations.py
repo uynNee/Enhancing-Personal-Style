@@ -1,14 +1,12 @@
-import pickle
-from collections import OrderedDict
 import pandas as pd
 from flask import Blueprint, render_template, request, g, session, redirect, url_for
 from flask_wtf import FlaskForm
 from wtforms.fields.simple import HiddenField, SubmitField
 from wtforms.validators import DataRequired
-from utils.content_based_filtering import get_top_n_items, get_similar_items, articleType_mappings, skin_mappings
 from utils.collaborative_filtering import collaborative_filtering
-from utils.integrate_link import generate_search_urls
-
+from utils.content_based_filtering import select_random_cbf_products, random_recommendations
+from utils.recommend_init import process_recommendations, group_recommendations_by_subcategory, \
+    fetch_recommendation_data
 # /routes/recommendations.py
 recommendations_bp = Blueprint('recommendations', __name__)
 
@@ -23,7 +21,18 @@ def recommend():
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     user_id = session.get('user_id')
-    grouped_recommendations, liked_products, shape, gender, skin_tone = get_recommendations(user_id)
+    db = g.db
+    shape, gender, skin_tone, dataframe, cbf_recommendations = fetch_recommendation_data(user_id, db, request.args)
+    user_likes_query = "SELECT item_id FROM user_likes WHERE user_id = ?"
+    user_likes = db.execute(user_likes_query, (user_id,)).fetchall()
+    liked_products = [item[0] for item in user_likes]
+    user_likes_query_all = "SELECT user_id, item_id FROM user_likes"
+    user_likes_all = db.execute(user_likes_query_all).fetchall()
+    user_likes_df = pd.DataFrame(user_likes_all, columns=['user_id', 'item_id'])
+    cf_recommendations = collaborative_filtering(user_likes_df)
+    final_recommendations = process_recommendations(cbf_recommendations, cf_recommendations, dataframe, user_likes_df,
+                                                    skin_tone, gender)
+    grouped_recommendations = group_recommendations_by_subcategory(final_recommendations)
     form = LikeForm()
     return render_template('recommendation.html', products=grouped_recommendations, user_shape=shape,
                            user_gender=gender, user_skin_tone=skin_tone, liked_products=liked_products, form=form)
@@ -34,87 +43,14 @@ def test_recommend():
     if 'user_id' not in session:
         return redirect(url_for('user.login'))
     user_id = session.get('user_id')
-    grouped_recommendations, liked_products, shape, gender, skin_tone = get_recommendations(user_id)
-    form = LikeForm()
-    return render_template('user_testing_recommendation.html', products=grouped_recommendations, user_shape=shape,
-                           user_gender=gender, user_skin_tone=skin_tone, liked_products=liked_products, form=form)
-
-
-def extract_product_details(product):
-    return {
-        'id': product['id'].values[0],
-        'product_display_name': product['productDisplayName'].values[0],
-        'product_image_link': product['link'].values[0],
-        'subCategory': product['subCategory'].values[0],
-        'gender': product['gender'].values[0],
-        'article_type': product['articleType'].values[0],
-        'base_color': product['baseColour'].values[0],
-        'season': product['season'].values[0],
-        'usage': product['usage'].values[0],
-    }
-
-
-def group_recommendations_by_subcategory(recommendations):
-    ordered_subcategories = ['Topwear', 'Bottomwear', 'Headwear', 'Dress']
-    grouped_recommendations = OrderedDict((subcategory, []) for subcategory in ordered_subcategories)
-    for product in recommendations:
-        subcategory = product['subCategory']
-        if subcategory in grouped_recommendations:
-            grouped_recommendations[subcategory].append(product)
-
-    return {subcategory: products for subcategory, products in grouped_recommendations.items() if products}
-
-
-def get_recommendations(user_id):
-    query_preferences = "SELECT body_shape, gender, skin_tone FROM user_preferences WHERE user_id = ?"
-    user_preferences = g.db.execute(query_preferences, (user_id,)).fetchone()
-    if user_preferences:
-        shape = user_preferences[0]  # body_shape
-        gender = user_preferences[1]  # gender
-        skin_tone = user_preferences[2]  # skin_tone
-    else:
-        shape = request.args.get('shape')
-        gender = request.args.get('gender')
-        skin_tone = request.args.get('skin_tone')
-    recommended_shape = articleType_mappings.get(shape, [])
-    recommended_skin = skin_mappings.get(skin_tone, [])
-    with open('clothing_knn.pkl', 'rb') as f:
-        knn_model = pickle.load(f)
-    query = "SELECT * FROM store_product"
-    dataframe = pd.read_sql_query(query, g.db)
-    top_n_items = get_top_n_items(dataframe, recommended_shape, recommended_skin, gender)
-    cbf_recommendations = get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, recommended_skin, gender)
-    user_likes_query = "SELECT item_id FROM user_likes WHERE user_id = ?"
-    user_likes = g.db.execute(user_likes_query, (user_id,)).fetchall()
-    liked_products = [item[0] for item in user_likes]
-    user_likes_query_all = "SELECT user_id, item_id FROM user_likes"
-    user_likes_all = g.db.execute(user_likes_query_all).fetchall()
-    user_likes_df = pd.DataFrame(user_likes_all, columns=['user_id', 'item_id'])
-    cf_recommendations = collaborative_filtering(user_likes_df)
-    final_recommendations = []
-    for item_id in cbf_recommendations:
-        product = dataframe[dataframe['id'] == item_id]
-        if not product.empty:
-            product_details = extract_product_details(product)
-            if product_details['base_color'] in recommended_skin:
-                product_details['liked_by_count'] = user_likes_df[user_likes_df['item_id'] == item_id].shape[0]
-                product_name_for_search = product_details['product_display_name'].replace(" ", "+")
-                amazon_url = generate_search_urls([product_name_for_search])
-                product_details.update({
-                    'amazon_search_url': amazon_url,
-                    'recommended_by': 'content_based_filtering'
-                })
-                final_recommendations.append(product_details)
-    for item_id in cf_recommendations:
-        product = dataframe[dataframe['id'] == item_id]
-        if not product.empty:
-            product_details = extract_product_details(product)
-            product_details['liked_by_count'] = user_likes_df[user_likes_df['item_id'] == item_id].shape[0]
-            product_name_for_search = product_details['product_display_name'].replace(" ", "+")
-            amazon_url = generate_search_urls([product_name_for_search])
-            product_details.update({
-                'amazon_search_url': amazon_url,
-                'recommended_by': 'collaborative_filtering'
-            })
-            final_recommendations.append(product_details)
-    return group_recommendations_by_subcategory(final_recommendations), liked_products, shape, gender, skin_tone
+    db = g.db
+    shape, gender, skin_tone, dataframe, cbf_recommendations = fetch_recommendation_data(user_id, db, request.args)
+    cbf_df = select_random_cbf_products(cbf_recommendations, dataframe)
+    cbf_df['filtering'] = 'content-based'
+    random_df = random_recommendations(db, gender)
+    random_df['filtering'] = 'random'
+    test_recommendations = pd.concat([cbf_df, random_df])
+    test_recommendations = test_recommendations.sample(frac=1)
+    test_recommendations_json = test_recommendations.to_json(orient='records')
+    return render_template('user_testing_recommendation.html', products=test_recommendations_json,
+                           user_shape=shape, user_gender=gender, user_skin_tone=skin_tone, user_id=user_id)

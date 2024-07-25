@@ -4,20 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhancing Personal Style</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="user-id" content="{{ user_id }}">
+    <title>User Testing - Recommendations</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/recommend.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='script/recommend.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/test_recommend.css') }}">
+    <style type="text/css">
+        * {
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+            user-select: text !important;
+        }
+    </style>
 </head>
 <body>
     <div class="top-bar">
-        <a href="{{ url_for('main.index') }}" class="home-icon"><i class="fas fa-home"></i></a>
-        <div class="search-bar">
-            <form action="/search" method="GET">
-                <input type="text" name="query" placeholder="Search products...">
-                <button type="submit"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
+        <a href="{{ url_for('test.test') }}" class="home-icon"><i class="fas fa-home"></i></a>
         <div class="dropdown">
             <button class="dropbtn">User's Information</button>
             <div class="dropdown-content">
@@ -27,41 +30,57 @@
             </div>
         </div>
     </div>
-    <h1>Recommended Products</h1>
-    {% for articleType, items in products.items() %}
-        <div class="article-type">
-            <h2>{{ articleType }}</h2>
-            <div class="product-list">
-                {% for product in items %}
-                    <div class="product">
-                        {% if product.recommended_by == 'collaborative_filtering' %}
-                            <div class="cf-message">{{ product.liked_by_count }} user(s) also liked this</div>
-                        {% endif %}
-                        <h3>{{ product.product_display_name }}</h3>
-                        <img src="{{ product.product_image_link }}" alt="Product Image" class="product-image">
-                        <a href="{{ product.amazon_search_url }}" target="_blank" class="no-underline">
-                            <button type="submit" class="amazon-btn">
-                                <img src="{{ url_for('static', filename='assets/amazon/amazon.svg') }}" alt="Amazon Icon">
-                                Search for Product
-                            </button>
-                        </a>
-                        <form method="POST" action="{{ url_for('user.like_product') }}" class="like-form" data-product-id="{{ product.id }}">
-                            {{ form.hidden_tag() }}
-                            <input type="hidden" name="product_id" value="{{ product.id }}">
-                            {% if product.id in liked_products %}
-                                <button type="button" class="like-btn" title="You liked this item!">
-                                    <img src="{{ url_for('static', filename='assets/like/like.svg') }}" alt="Unlike">
-                                </button>
-                            {% else %}
-                                <button type="button" class="like-btn" title="You haven't liked this item!">
-                                    <img src="{{ url_for('static', filename='assets/like/unlike.svg') }}" alt="Like">
-                                </button>
-                            {% endif %}
-                        </form>
+    <div class="container">
+        <h1>Recommended Products</h1>
+        <div class="content-wrapper">
+            <div id="product-container" class="product">
+                <p id="loading-placeholder" style="text-align:center;">Loading recommendations...</p>
+            </div>
+            <div id="testing-form">
+                <form id="rating-form">
+                    <label for="likert-scale" class="form-label">How satisfied are you with this recommendation?</label>
+                    <div class="scale">
+                        <span class="scale-element">Extremely Dislike</span>
+                        <input type="range" id="likert-scale" name="likert_scale" class="likert-scale" min="1" max="5" step="0.1" required>
+                        <span class="scale-element">Extremely Like</span>
                     </div>
-                {% endfor %}
+                    <br>
+                    <label for="matching_slider" class="form-label">How closely does the product image relate to its description?</label>
+                    <div class="scale">
+                        <span class="scale-element">Extremely Unmatch</span>
+                        <input type="range" id="matching_slider" name="matching_slider" class="matching-slider" min="1" max="5" step="0.1" required>
+                        <span class="scale-element">Extremely Match</span>
+                    </div>
+                    <br>
+                    <label for="shape-slider" class="form-label">How do you rate the product's compatibility for your body type?</label>
+                    <div class="scale">
+                        <span class="scale-element">Extremely Unsuitable</span>
+                        <input type="range" id="shape-slider" name="shape_slider" class="shape-slider" min="1" max="5" step="0.1" required>
+                        <span class="scale-element">Extremely Suitable</span>
+                    </div>
+                    <br>
+                    <label for="skin-tone-slider" class="form-label">How do you rate the product's compatibility for your skin tone?</label>
+                    <div class="scale">
+                        <span class="scale-element">Extremely Unsuitable</span>
+                        <input type="range" id="skin-tone-slider" name="skin_tone_slider" class="skin-tone-slider" min="1" max="5" step="0.1" required>
+                        <span class="scale-element">Extremely Suitable</span>
+                    </div>
+                    <input type="hidden" id="product-id" name="product_id">
+                    <div id="message-container" class="message-container"></div>
+                    <div class="submit-button-container">
+                        <button type="submit"><strong>Submit Rating</strong></button>
+                    </div>
+                </form>
             </div>
         </div>
-    {% endfor %}
+        <div class="navigation-buttons">
+            <button id="previous-product-btn" class="previous-product-btn"><strong>Previous Product</strong></button>
+            <button id="next-product-btn" class="next-product-btn"><strong>Next Product</strong></button>
+        </div>
+    </div>
+    <script type="text/javascript">
+        const products = JSON.parse({{ products | tojson | safe }});
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='script/test_recommend.js') }}"></script>
 </body>
 </html>

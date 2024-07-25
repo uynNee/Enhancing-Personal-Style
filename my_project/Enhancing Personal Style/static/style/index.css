@@ -148,12 +148,28 @@ input[type="submit"]:hover, button[type="button"]:hover {
 }
 
 .radio-button .question-mark {
-    padding: 15px;
+    padding: 6px 0;
     cursor: pointer;
     font-weight: bold;
     line-height: 20px;
     display: inline-block;
-    margin: -15px;
+    margin: -15px -5px;
+    border-radius: 50%;
+    background-color: var(--mdc-theme-surface);
+    color: var(--mdc-theme-primary);
+    width: 30px;
+    height: 30px;
+    text-align: center;
+}
+
+.radio-button:hover {
+    background-color: #c798a6;
+    color: var(--mdc-theme-surface);
+}
+
+.radio-button .question-mark:hover {
+    background-color: var(--mdc-theme-primary);
+    color: var(--mdc-theme-on-primary);
 }
 
 button[type="button"] {

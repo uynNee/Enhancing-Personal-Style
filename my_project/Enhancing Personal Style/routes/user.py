@@ -139,3 +139,55 @@ def save_user_preferences(user_id, request_form):
         """
         g.db.execute(query_insert, (user_id, body_shape, gender, skin_tone, chest, waist, high_hip, hip))
     g.db.commit()
+
+
+@user_bp.route('/save_rating', methods=['POST'])
+def save_rating():
+    try:
+        data = request.json
+        user_id = session.get('user_id')
+        product_id = data.get('product_id')
+        likert_scale = data.get('likert_scale')
+        matching_slider = data.get('matching_slider')
+        shape_slider = data.get('shape_slider')
+        skin_tone_slider = data.get('skin_tone_slider')
+        filtering = data.get('filtering')
+        if not user_id:
+            return jsonify({'success': False, 'message': 'User not logged in'}), 401
+        query = """
+            INSERT OR REPLACE INTO user_ratings
+            (user_id, product_id, filtering, likert_scale, matching_slider, shape_slider, skin_tone_slider)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        g.db.execute(query,
+                     (user_id, product_id, filtering, likert_scale, matching_slider, shape_slider, skin_tone_slider))
+        g.db.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        print(e)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@user_bp.route('/get_rating', methods=['GET'])
+def get_rating():
+    user_id = request.args.get('user_id')
+    product_id = request.args.get('product_id')
+    filtering = request.args.get('filtering')
+    query = """
+        SELECT likert_scale, matching_slider, shape_slider, skin_tone_slider
+        FROM user_ratings
+        WHERE user_id = ? AND product_id = ? AND filtering = ?
+    """
+    rating = g.db.execute(query, (user_id, product_id, filtering)).fetchone()
+    if rating:
+        return jsonify({
+            'success': True,
+            'rating': {
+                'likert_scale': rating[0],
+                'matching_slider': rating[1],
+                'shape_slider': rating[2],
+                'skin_tone_slider': rating[3]
+            }
+        })
+    else:
+        return jsonify({'success': False})

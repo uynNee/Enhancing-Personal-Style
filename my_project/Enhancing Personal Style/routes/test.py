@@ -1,10 +1,7 @@
-# routes/test.py
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_wtf.csrf import generate_csrf
-
 from routes.main import handle_form_request
-from utils.prediction import predict_body_shape
-
+# routes/test.py
 test_bp = Blueprint('test', __name__)
 
 

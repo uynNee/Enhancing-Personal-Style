@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 # /utils/content_based_filtering.py
 articleType_mappings = {
@@ -58,3 +59,19 @@ def get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, reco
             for i in range(n):
                 similar_items.append(sparse_matrix_products.index[indices[0][i]])
     return similar_items
+
+
+def select_random_cbf_products(cbf_recommendations, dataframe, n=5):
+    if len(cbf_recommendations) <= n:
+        selected_products = dataframe[dataframe['id'].isin(cbf_recommendations)]
+    else:
+        selected_product_ids = random.sample(cbf_recommendations, n)
+        selected_products = dataframe[dataframe['id'].isin(selected_product_ids)]
+    return selected_products
+
+
+def random_recommendations(db, gender, n=5):
+    query = (f"SELECT * FROM store_product WHERE gender = '{gender}'"
+             f" AND subCategory IN ('Topwear', 'Bottomwear', 'Dress') ORDER BY RANDOM() LIMIT {n}")
+    selected_products = pd.read_sql_query(query, db)
+    return selected_products

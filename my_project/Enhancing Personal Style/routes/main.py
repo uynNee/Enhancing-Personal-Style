@@ -1,9 +1,9 @@
-# routes/main.py
 import pandas as pd
 from flask import Blueprint, render_template, request, g, redirect, url_for, jsonify
 from flask_wtf.csrf import generate_csrf
 from utils.prediction import predict_body_shape
 from utils.database import get_db, close_db
+# routes/main.py
 
 main_bp = Blueprint('main', __name__)
 

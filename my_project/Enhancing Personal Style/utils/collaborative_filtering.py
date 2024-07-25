@@ -1,6 +1,6 @@
 import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
 from flask import session
+from sklearn.metrics.pairwise import cosine_similarity
 # /utils/collaborative_filtering.py
 
 
@@ -16,5 +16,4 @@ def collaborative_filtering(user_likes_df):
         recommendations = similar_users_likes[~similar_users_likes.index.isin(liked_products)].head(5).index.tolist()
     else:
         recommendations = []
-    print(recommendations)
     return recommendations

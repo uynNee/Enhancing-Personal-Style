@@ -9,7 +9,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='/script/index.js') }}"></script>
 </head>
 <body>
-    <h1>Enhancing Personal Style</h1>
+    <h1>User Testing</h1>
     <div class="auth-buttons">
         {% if session.username %}
             <a href="{{ url_for('user.logout') }}">Logout</a>
@@ -17,6 +17,7 @@
             <a href="{{ url_for('user.login') }}">Login</a>
             <a href="{{ url_for('user.register') }}">Register</a>
         {% endif %}
+        <a href="{{ url_for('main.index') }}">Switch to App</a>
     </div>
     {% if session.username %}
         <form method="POST" action="{{ url_for('user.test_save_preferences') }}">
