@@ -1,0 +1,65 @@
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL
+);
+
+CREATE TABLE user_likes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES user (id),
+    FOREIGN KEY (item_id) REFERENCES store_product (id),
+    UNIQUE(user_id, item_id)
+);
+
+CREATE TABLE user_preferences (
+    user_id INTEGER PRIMARY KEY,
+    body_shape TEXT,
+    gender TEXT,
+    skin_tone TEXT,
+    chest INTEGER,
+    waist INTEGER,
+    high_hip INTEGER,
+    hip INTEGER,
+    FOREIGN KEY(user_id) REFERENCES user(id)
+);
+
+CREATE TABLE user_ratings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    filtering STRING,
+    likert_scale FLOAT,
+    matching_slider FLOAT,
+    shape_slider FLOAT,
+    skin_tone_slider FLOAT,
+    FOREIGN KEY (user_id) REFERENCES user (id),
+    FOREIGN KEY (product_id) REFERENCES store_product (id),
+    UNIQUE(user_id, product_id, filtering)
+);
+
+-- add 10 new users named tester1 to tester10 with password '123456789'
+insert into user (username, password) values ('tester1', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester2', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester3', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester4', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester5', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester6', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester7', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester8', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester9', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+insert into user (username, password) values ('tester10', 'scrypt:32768:8:1$A2xpgeaPj3a1vhF5$d0a5645cf9bdee94a162680bedf342ec8af1edc880001bc96734756df5087ff766d0ddabe442ae1dbf8dae148fca7c3d1fa57fcd88fd63a49f5a97f6e65b25dc');
+
+/*Add some likes to the user_likes*/
+insert into user_likes (user_id, item_id) values ('1', 18005);
+insert into user_likes (user_id, item_id) values ('1', 4787);
+insert into user_likes (user_id, item_id) values ('1', 7533);
+insert into user_likes (user_id, item_id) values ('1', 4786);
+insert into user_likes (user_id, item_id) values ('1', 7875);
+insert into user_likes (user_id, item_id) values ('2', 18005);
+insert into user_likes (user_id, item_id) values ('2', 4787);
+insert into user_likes (user_id, item_id) values ('2', 7533);
+insert into user_likes (user_id, item_id) values ('2', 4786);
+insert into user_likes (user_id, item_id) values ('2', 7875);
+insert into user_likes (user_id, item_id) values ('2', 14940);
