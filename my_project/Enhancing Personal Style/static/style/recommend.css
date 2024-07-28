@@ -18,71 +18,37 @@ body {
     justify-content: space-between;
     align-items: center;
     background-color: var(--mdc-theme-surface);
-    padding: 10px 50px;
+    padding: 5px 50px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .home-icon {
     color: var(--mdc-theme-primary);
     text-decoration: none;
-    font-size: 24px;
 }
 
-.search-bar {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center;
-    width: 100%; /* Occupy full width of its container */
-    max-width: 1000px; /* Limit maximum width if necessary */
-    margin: 0 auto; /* Center horizontally */
-    padding: 0 10px;
-    box-sizing: border-box;
-}
-
-.search-bar form {
-    display: flex;
-    align-items: center;
-}
-
-
-.search-bar input[type="text"] {
-    padding: 8px;
-    width: 100%;
-    max-width: 600px;
-    border: 1px solid #ccc;
-    border-radius: var(--mdc-shape-small);
-    font-size: 14px;
-    margin: 0 0 0 160px;
-}
-
-.search-bar button {
-    background-color: rgba(0, 0, 0, 0);
-    color: var(--mdc-theme-primary);
-    border: none;
-    padding: 8px 12px;
-    border-radius: var(--mdc-shape-small);
-    cursor: pointer;
-}
-
-.search-bar button:hover {
-    background-color: var(--mdc-theme-primary);
-    color: var(--mdc-theme-on-secondary);
+.home-icon img {
+    width: 30px;
+    height: 30px;
 }
 
 .dropdown {
     position: relative;
     display: inline-block;
-    margin-right: 20px; /* Adjust margin as needed */
+    margin-right: 20px;
 }
 
 .dropbtn {
-    background-color: var(--mdc-theme-primary);
-    color: var(--mdc-theme-on-primary);
-    padding: 10px;
-    font-size: 16px;
+    display: flex;
+    background-color: var(--mdc-theme-on-primary);
     border: none;
     border-radius: var(--mdc-shape-small);
     cursor: pointer;
+}
+
+.dropbtn img {
+    width: 35px;
+    height: 35px;
 }
 
 .dropdown-content {
@@ -91,11 +57,11 @@ body {
     background-color: #f9f9f9;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     z-index: 1;
-    width: max-content; /* Adjust to your content width */
-    overflow-y: auto; /* Add vertical scroll if content exceeds height */
-    max-height: 200px; /* Limit maximum height to avoid too much scrolling */
-    left: 50%; /* Align dropdown content to the middle */
-    transform: translateX(-50%); /* Center align the dropdown content */
+    width: max-content;
+    overflow-y: auto;
+    max-height: 200px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .dropdown-content p {
@@ -186,7 +152,7 @@ h1 {
 }
 
 .no-underline {
-        text-decoration: none; /* Removes the underline */
+        text-decoration: none;
 }
 
 .amazon-btn {
@@ -215,7 +181,7 @@ h1 {
         background: none;
         border: none;
         cursor: pointer;
-        margin-top: auto; /* Push like button to the bottom */
+        margin-top: auto;
 }
 
 .like-btn img {
@@ -233,9 +199,9 @@ h1 {
         padding: 5px 0;
         position: absolute;
         z-index: 1;
-        bottom: 125%; /* Position above the button */
+        bottom: 125%;
         left: 50%;
-        margin-left: -60px; /* Center the tooltip */
+        margin-left: -60px;
         opacity: 0;
         transition: opacity 0.3s;
 }
@@ -243,7 +209,7 @@ h1 {
 .tooltip-text::after {
         content: "";
         position: absolute;
-        top: 100%; /* At the bottom of the tooltip */
+        top: 100%;
         left: 50%;
         margin-left: -5px;
         border-width: 5px;

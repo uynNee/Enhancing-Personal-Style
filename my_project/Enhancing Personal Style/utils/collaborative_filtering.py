@@ -6,6 +6,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 def collaborative_filtering(user_likes_df):
     user_item_matrix = user_likes_df.pivot_table(index='user_id', columns='item_id', aggfunc='size', fill_value=0)
+    if user_item_matrix.empty:
+        return []
     user_similarity = cosine_similarity(user_item_matrix)
     user_similarity_df = pd.DataFrame(user_similarity, index=user_item_matrix.index, columns=user_item_matrix.index)
     user_id = session['user_id']

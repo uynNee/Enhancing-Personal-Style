@@ -5,21 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enhancing Personal Style</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/recommend.css') }}">
     <script type="text/javascript" src="{{ url_for('static', filename='script/recommend.js') }}"></script>
 </head>
 <body>
     <div class="top-bar">
-        <a href="{{ url_for('main.index') }}" class="home-icon"><i class="fas fa-home"></i></a>
-<!--        <div class="search-bar">-->
-<!--            <form action="/search" method="GET">-->
-<!--                <input type="text" name="query" placeholder="Search products...">-->
-<!--                <button type="submit"><i class="fas fa-search"></i></button>-->
-<!--            </form>-->
-<!--        </div>-->
+        <a href="{{ url_for('main.index') }}" class="home-icon">
+            <img src="{{ url_for('static', filename='assets/home/home.svg') }}" alt="Home Icon">
+        </a>
         <div class="dropdown">
-            <button class="dropbtn">User's Information</button>
+            <button class="dropbtn">
+                <img src="{{ url_for('static', filename='assets/user/user.svg') }}" alt="User Info Dropdown">
+            </button>
             <div class="dropdown-content">
                 <p>Body shape: {{ user_shape }}</p>
                 <p>Gender: {{ user_gender }}</p>
