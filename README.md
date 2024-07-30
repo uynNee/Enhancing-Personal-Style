@@ -16,29 +16,16 @@ The Enhancing Personal Style is a web-based application designed to provide pers
 - **Database**: SQLite3 for storing user data and preferences
 - **Machine Learning**: Scikit-learn for predictive modeling and recommendation algorithms
 
-## Setup and Installation
-1. Clone the repository:
-   ```
-   git clone https://github.com/uynNee/Enhancing-Personal-Style.git
-   ```
-2. Navigate to the project directory:
-   ```
-   cd Enhancing-Personal-Style\my_project\Enhancing Personal Style\
-   ```
-3. Initialize the database:
-   ```
-   python init_db.py
-   ```
-4. Run the application:
-   ```
-   python app.py
-   ```
-   The application will be accessible at `http://localhost:5000`.
+## What is in /my-project
+1. Enhancing Personal Style: The web application, this is the main aspect of this project. Details of how to run the app is specified in [README.md](https://github.com/uynNee/Enhancing-Personal-Style/blob/main/my_project/Enhancing%20Personal%20Style/README.md)
+2. data: The [dataset](https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-small) used to train the model and run the web app. Contains the information and links to each fashion product.
+3. notebooks: Contains everything for the preprocessing process (body shape prediction and fashion item recommendation models). Also contains the scratch data from [Body Shape Calculator](https://calculator-online.net/body-shape-calculator/) to build the body shape prediction model.
 
-## Usage
+## Usage of Enhancing Personal Style
 - **Register**: Create a new account using the registration form.
 - **Login**: Access the system by logging in with your credentials.
 - **Set Preferences**: Update your profile with body measurements, skin tone, and gender for personalized recommendations.
+- **User Testing**: User can switch between testing page (to rate fashion items) and the main app.
 - **Explore Recommendations**: Browse through the recommended clothing items tailored to your profile.
 - **Like Items**: Like items to refine future recommendations.
 
