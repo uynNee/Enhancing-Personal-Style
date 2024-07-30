@@ -29,7 +29,7 @@ skin_mappings = {
 }
 
 
-def get_top_n_items(dataframe, recommended_shape, recommended_skin, gender, n=5):
+def filter_dataframe(dataframe, recommended_shape, recommended_skin, gender):
     if gender == "Unisex":
         filtered_df = dataframe[(dataframe['baseColour'].isin(recommended_skin)) &
                                 (dataframe['articleType'].isin(recommended_shape)) &
@@ -38,8 +38,19 @@ def get_top_n_items(dataframe, recommended_shape, recommended_skin, gender, n=5)
         filtered_df = dataframe[(dataframe['baseColour'].isin(recommended_skin)) &
                                 (dataframe['articleType'].isin(recommended_shape)) &
                                 (dataframe['gender'] == gender)]
+    return filtered_df
+
+
+def get_top_n_items(dataframe, recommended_shape, recommended_skin, gender, n=5):
+    filtered_df = filter_dataframe(dataframe, recommended_shape, recommended_skin, gender)
     top_n_items = filtered_df.groupby('articleType').head(n)['id'].tolist()
     return top_n_items
+
+
+def get_all_recommendations(dataframe, recommended_shape, recommended_skin, gender):
+    filtered_df = filter_dataframe(dataframe, recommended_shape, recommended_skin, gender)
+    all_items = filtered_df['id'].tolist()
+    return all_items
 
 
 def get_similar_items(knn_model, dataframe, top_n_items, recommended_shape, recommended_skin, gender, n=5):

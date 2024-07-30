@@ -19,6 +19,7 @@ def fetch_recommendation_data(user_id, db, request_args):
     return shape, gender, skin_tone, dataframe, cbf_recommendations
 
 
+
 def get_user_preferences(user_id, db, request_args):
     query_preferences = "SELECT body_shape, gender, skin_tone FROM user_preferences WHERE user_id = ?"
     user_preferences = db.execute(query_preferences, (user_id,)).fetchone()

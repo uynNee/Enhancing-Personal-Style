@@ -11,6 +11,7 @@ venv\Scripts\activate
 ```
 4. install the required libraries, run this:
 ```
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 5. run the app:

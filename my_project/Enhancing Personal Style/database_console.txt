@@ -63,3 +63,22 @@ insert into user_likes (user_id, item_id) values ('2', 7533);
 insert into user_likes (user_id, item_id) values ('2', 4786);
 insert into user_likes (user_id, item_id) values ('2', 7875);
 insert into user_likes (user_id, item_id) values ('2', 14940);
+
+PRAGMA integrity_check;
+-- ok
+
+VACUUM;
+
+-- show body_shape, gender, skin_tone user id=10:
+SELECT body_shape,gender,skin_tone FROM user_preferences WHERE user_id = 10;
+
+SELECT * FROM user;
+
+SELECT * FROM user_likes;
+
+SELECT * FROM user_ratings;
+
+SELECT * FROM user_preferences;
+
+-- view columns of table store_product
+PRAGMA table_info(store_product);

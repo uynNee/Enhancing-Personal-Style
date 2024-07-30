@@ -1,9 +1,9 @@
-# create_app.py
 from flask import Flask
 from routes.main import main_bp
 from routes.test import test_bp
 from routes.user import user_bp
 from routes.recommendations import recommendations_bp
+# create_app.py
 
 
 def create_app():
