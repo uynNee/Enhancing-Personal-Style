@@ -30,4 +30,4 @@ The Enhancing Personal Style is a web-based application designed to provide pers
 - **Like Items**: Like items to refine future recommendations.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Enhancing Personal Style Non-Commercial License - see the LICENSE file for details.
