@@ -3,8 +3,6 @@
 ## Overview
 The Enhancing Personal Style is a web-based application designed to provide personalized clothing recommendations to users. It leverages various algorithms, including content-based and collaborative filtering, to suggest items that match users' preferences in terms of body shape, skin tone, and personal style.
 
-![Poter Image](https://github.com/uynNee/Enhancing-Personal-Style/blob/da6f529a036f2939e64030daba06c1fbab8380bb/my_project/poster.png)
-
 ## Features
 - **User Authentication**: Secure login and registration functionality to manage user sessions.
 - **Body Shape Prediction**: Utilizes user-provided measurements to predict the user's body shape using a pre-trained model.
